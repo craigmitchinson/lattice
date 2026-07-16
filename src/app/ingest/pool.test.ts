@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { WorkerPool, type ParseWorkerResponse, type PoolWorkerLike } from './pool.ts';
 
 /** In-memory stand-in for a DOM Worker, driven manually from tests. */
@@ -153,5 +153,82 @@ describe('WorkerPool', () => {
 
     expect(workers.every((w) => w.terminated)).toBe(true);
     expect(() => pool.enqueue({ id: 'x', fileName: 'x.bprelease', buffer: new ArrayBuffer(0) }, { onResult: () => {} })).toThrow();
+  });
+
+  it('replaces a crashed worker so later tasks are not sent to a dead one', () => {
+    const { pool, workers } = makeStubPool(1);
+
+    pool.enqueue({ id: 'a', fileName: 'a.bprelease', buffer: new ArrayBuffer(0) }, { onResult: () => {} });
+    workers[0]?.crash('boom');
+
+    expect(workers).toHaveLength(2);
+    expect(workers[0]?.terminated).toBe(true);
+
+    pool.enqueue({ id: 'b', fileName: 'b.bprelease', buffer: new ArrayBuffer(0) }, { onResult: () => {} });
+    expect(workers[1]?.postMessages).toHaveLength(1);
+  });
+
+  describe('watchdog', () => {
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('fails the task and restarts the worker when it never responds, so the batch completes', () => {
+      vi.useFakeTimers();
+      const workers: StubWorker[] = [];
+      const pool = new WorkerPool({
+        size: 1,
+        taskTimeoutMs: 100,
+        workerFactory: () => {
+          const worker = new StubWorker();
+          workers.push(worker);
+          return worker;
+        },
+      });
+
+      const received: ParseWorkerResponse[] = [];
+      const started: string[] = [];
+      pool.enqueue(
+        { id: 'a', fileName: 'a.bprelease', buffer: new ArrayBuffer(0) },
+        { onResult: (r) => received.push(r) },
+      );
+      pool.enqueue(
+        { id: 'b', fileName: 'b.bprelease', buffer: new ArrayBuffer(0) },
+        { onStart: () => started.push('b'), onResult: (r) => received.push(r) },
+      );
+
+      vi.advanceTimersByTime(150);
+
+      expect(received).toHaveLength(1);
+      const response = received[0]!;
+      expect(response.id).toBe('a');
+      expect(response.outcome.ok).toBe(false);
+      if (!response.outcome.ok) {
+        expect(response.outcome.failure.reason).toContain('did not respond');
+      }
+
+      // The queued task moved on to the replacement worker.
+      expect(started).toEqual(['b']);
+      expect(workers).toHaveLength(2);
+      expect(workers[1]?.postMessages).toHaveLength(1);
+
+      workers[1]?.respond(successResponse('b'));
+      expect(received).toHaveLength(2);
+    });
+
+    it('does not fire after a task completes in time', () => {
+      vi.useFakeTimers();
+      const { pool, workers } = makeStubPool(1);
+      const received: ParseWorkerResponse[] = [];
+
+      pool.enqueue({ id: 'a', fileName: 'a.bprelease', buffer: new ArrayBuffer(0) }, { onResult: (r) => received.push(r) });
+      workers[0]?.respond(successResponse('a'));
+
+      vi.advanceTimersByTime(120_000);
+
+      expect(received).toHaveLength(1);
+      expect(received[0]?.outcome.ok).toBe(true);
+      expect(workers).toHaveLength(1);
+    });
   });
 });

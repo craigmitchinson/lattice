@@ -36,7 +36,7 @@ folder or internal file share.
 
 | Phase | Scope | Status |
 | ----- | ----- | ------ |
-| 1 | Ingest, parse, estate graph, impact analysis | In progress |
+| 1 | Ingest, parse, estate graph, impact analysis | Built, awaiting review |
 | 2 | Reusability and clone detection | Not started |
 | 3 | Quality rules engine | Not started |
 | 4 | Process visualisation | Not started |

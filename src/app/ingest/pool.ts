@@ -57,33 +57,61 @@ interface WorkerSlot {
   busy: boolean;
   /** The task and callbacks this slot is currently running, if any. */
   current: QueuedTask | null;
+  /** Watchdog for the current task; a worker that never responds must not stall the batch. */
+  timer: ReturnType<typeof setTimeout> | null;
 }
+
+/** How long a single file may parse before its worker is declared hung and restarted. */
+const DEFAULT_TASK_TIMEOUT_MS = 60_000;
 
 /**
  * Round-robin pool of parse workers. Callers enqueue files; each dispatched
  * task gets its own callbacks so results route back to the right caller
- * regardless of completion order.
+ * regardless of completion order. A worker that errors or stops responding
+ * fails only its current task and is replaced; the batch always completes.
  */
 export class WorkerPool {
   private readonly slots: WorkerSlot[];
   private readonly queue: QueuedTask[] = [];
+  private readonly factory: WorkerFactory;
+  private readonly taskTimeoutMs: number;
   private disposed = false;
 
-  constructor(options: { size?: number; workerFactory?: WorkerFactory } = {}) {
+  constructor(options: { size?: number; workerFactory?: WorkerFactory; taskTimeoutMs?: number } = {}) {
     const size = options.size ?? defaultPoolSize();
-    const factory = options.workerFactory ?? defaultWorkerFactory;
+    this.factory = options.workerFactory ?? defaultWorkerFactory;
+    this.taskTimeoutMs = options.taskTimeoutMs ?? DEFAULT_TASK_TIMEOUT_MS;
 
     this.slots = Array.from({ length: size }, () => {
-      const worker = factory();
-      const slot: WorkerSlot = { worker, busy: false, current: null };
-      worker.onmessage = (event) => {
-        this.handleResult(slot, event.data);
-      };
-      worker.onerror = (event) => {
-        this.handleWorkerError(slot, event);
-      };
+      const slot: WorkerSlot = { worker: this.factory(), busy: false, current: null, timer: null };
+      this.wireWorker(slot);
       return slot;
     });
+  }
+
+  private wireWorker(slot: WorkerSlot): void {
+    slot.worker.onmessage = (event) => {
+      this.handleResult(slot, event.data);
+    };
+    slot.worker.onerror = (event) => {
+      this.handleWorkerError(slot, event);
+    };
+  }
+
+  /** Detaches and terminates the slot's worker and puts a fresh one in its place. */
+  private replaceWorker(slot: WorkerSlot): void {
+    slot.worker.onmessage = null;
+    slot.worker.onerror = null;
+    slot.worker.terminate();
+    slot.worker = this.factory();
+    this.wireWorker(slot);
+  }
+
+  private clearTimer(slot: WorkerSlot): void {
+    if (slot.timer !== null) {
+      clearTimeout(slot.timer);
+      slot.timer = null;
+    }
   }
 
   /** Queues a file for parsing. Dispatches immediately if a worker is free. */
@@ -100,6 +128,7 @@ export class WorkerPool {
     this.disposed = true;
     this.queue.length = 0;
     for (const slot of this.slots) {
+      this.clearTimer(slot);
       slot.worker.onmessage = null;
       slot.worker.onerror = null;
       slot.worker.terminate();
@@ -122,10 +151,28 @@ export class WorkerPool {
       const transfer = next.task.buffer.byteLength > 0 ? [next.task.buffer] : undefined;
       const request: ParseWorkerRequest = { id: next.task.id, fileName: next.task.fileName, buffer: next.task.buffer };
       slot.worker.postMessage(request, transfer);
+      slot.timer = setTimeout(() => this.handleTimeout(slot), this.taskTimeoutMs);
+    }
+  }
+
+  /** Fails the slot's current task with the given reason and frees the slot. */
+  private failCurrent(slot: WorkerSlot, reason: string): void {
+    const current = slot.current;
+    slot.busy = false;
+    slot.current = null;
+    if (current) {
+      current.callbacks.onResult({
+        id: current.task.id,
+        fileName: current.task.fileName,
+        contentHash: null,
+        byteSize: current.task.buffer.byteLength,
+        outcome: { ok: false, failure: { fileName: current.task.fileName, contentHash: null, reason } },
+      });
     }
   }
 
   private handleResult(slot: WorkerSlot, response: ParseWorkerResponse): void {
+    this.clearTimer(slot);
     const current = slot.current;
     slot.busy = false;
     slot.current = null;
@@ -134,19 +181,19 @@ export class WorkerPool {
   }
 
   private handleWorkerError(slot: WorkerSlot, event: ErrorEvent): void {
-    const current = slot.current;
-    slot.busy = false;
-    slot.current = null;
-    if (current) {
-      const message = event.message || 'worker crashed while parsing this file';
-      current.callbacks.onResult({
-        id: current.task.id,
-        fileName: current.task.fileName,
-        contentHash: null,
-        byteSize: current.task.buffer.byteLength,
-        outcome: { ok: false, failure: { fileName: current.task.fileName, contentHash: null, reason: message } },
-      });
-    }
+    this.clearTimer(slot);
+    // The worker may be unusable after an error (for example a failed module
+    // load), so replace it; keeping it would silently swallow later tasks.
+    this.replaceWorker(slot);
+    this.failCurrent(slot, event.message || 'worker crashed while parsing this file');
+    this.pump();
+  }
+
+  private handleTimeout(slot: WorkerSlot): void {
+    if (this.disposed) return;
+    slot.timer = null;
+    this.replaceWorker(slot);
+    this.failCurrent(slot, `worker did not respond within ${Math.round(this.taskTimeoutMs / 1000)} seconds and was restarted`);
     this.pump();
   }
 }

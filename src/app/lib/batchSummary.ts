@@ -52,8 +52,12 @@ export function deriveBatchSummary(fileEntries: readonly FileEntry[], graph: Est
         parsing++;
         break;
     }
-    if (entry.itemCounts) itemsByType = addItemCounts(itemsByType, entry.itemCounts);
-    if (entry.bpversions) for (const version of entry.bpversions) bpVersions.add(version);
+    // Duplicate files contributed nothing new to the estate, so counting
+    // their items would inflate the totals against the graph-derived stats.
+    if (entry.status !== 'duplicate') {
+      if (entry.itemCounts) itemsByType = addItemCounts(itemsByType, entry.itemCounts);
+      if (entry.bpversions) for (const version of entry.bpversions) bpVersions.add(version);
+    }
   }
 
   let duplicateConflicts = 0;

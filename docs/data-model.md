@@ -194,8 +194,8 @@ Built at ingest, held in memory:
   maps with a depth control; on a 100+ file estate this is milliseconds,
   no precomputed closure needed.
 - `byKind`: node kind → node ids, for the estate browser.
-- `consumerCounts`: node id → distinct consuming processes/objects,
-  precomputed for browser list rendering.
+- `consumers`: node id → set of distinct consuming process/object node
+  ids, precomputed for browser list rendering.
 
 ## Persistence
 

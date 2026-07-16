@@ -199,6 +199,7 @@ export function ImportView() {
                     {(entry.status === 'done' || entry.status === 'duplicate') &&
                       entry.itemCounts &&
                       formatItemCounts(entry.itemCounts)}
+                    {entry.status === 'done' && entry.error && <span> ({entry.error})</span>}
                   </td>
                 </tr>
               ))}

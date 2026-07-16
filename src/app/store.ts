@@ -91,6 +91,12 @@ export interface LatticeState {
  */
 let persistedHashes = new Set<string>();
 
+/**
+ * Hydration runs exactly once; every path that classifies or persists a file
+ * awaits this first so an in-flight IndexedDB read can never race an ingest.
+ */
+let hydrationPromise: Promise<void> | null = null;
+
 let pool: WorkerPool | null = null;
 function ensurePool(): WorkerPool {
   if (!pool) pool = new WorkerPool();
@@ -106,6 +112,10 @@ export const useLatticeStore = create<LatticeState>()((set, get) => {
 
   /** Applies one worker result to store state. Never rejects: all failure paths are handled internally. */
   async function applyParseResult(entryId: string, response: ParseWorkerResponse, batchHashes: Set<string>): Promise<void> {
+    // Duplicate classification must see the persisted-hash mirror fully
+    // seeded, so results wait for hydration (a no-op once it has run).
+    await get().hydrateFromStore();
+
     if (!isParseSuccess(response)) {
       updateEntry(entryId, {
         status: 'failed',
@@ -127,13 +137,18 @@ export const useLatticeStore = create<LatticeState>()((set, get) => {
     }
 
     batchHashes.add(contentHash);
-    persistedHashes.add(contentHash);
 
+    // Only a confirmed write marks the hash as persisted; marking it early
+    // would make a failed write look like a stored file, so a later re-drop
+    // of the same file would be skipped as a duplicate with no way to retry.
+    let persistWarning: string | undefined;
     try {
       await putRelease(release);
+      persistedHashes.add(contentHash);
     } catch (err) {
       // Parsing succeeded even if the persistence write failed; keep the
       // release in memory for this session rather than losing the work.
+      persistWarning = 'held in memory only, the local cache write failed';
       console.error(`Lattice: failed to persist ${release.file.fileName} locally`, err);
     }
 
@@ -142,7 +157,7 @@ export const useLatticeStore = create<LatticeState>()((set, get) => {
       discovery: state.discovery ? mergeDiscoveryReports([state.discovery, discovery]) : discovery,
     }));
 
-    updateEntry(entryId, { status: 'done', contentHash, itemCounts, bpversions });
+    updateEntry(entryId, { status: 'done', contentHash, itemCounts, bpversions, error: persistWarning });
   }
 
   return {
@@ -189,17 +204,41 @@ export const useLatticeStore = create<LatticeState>()((set, get) => {
       }
     },
 
-    hydrateFromStore: async () => {
-      const { releases, discardedStale } = await getStoredReleases();
-      persistedHashes = new Set(releases.map((r) => r.file.contentHash));
-      const graph = releases.length > 0 ? buildEstateGraph(releases) : null;
-      set({
-        releases,
-        graph,
-        discardedStale,
-        hydrated: true,
-        view: releases.length > 0 ? 'browser' : 'import',
-      });
+    hydrateFromStore: () => {
+      // Idempotent: concurrent callers (mount effect, parse results) share
+      // one hydration run and simply await its completion.
+      hydrationPromise ??= (async () => {
+        let stored: ParsedRelease[] = [];
+        let discardedStale = 0;
+        try {
+          const result = await getStoredReleases();
+          stored = result.releases;
+          discardedStale = result.discardedStale;
+        } catch (err) {
+          // IndexedDB being unavailable must not block importing; the app
+          // simply runs without a cache for this session.
+          console.error('Lattice: could not read the local cache', err);
+        }
+
+        for (const release of stored) persistedHashes.add(release.file.contentHash);
+
+        // Merge rather than replace: an ingest may already have added
+        // releases while the cache read was in flight.
+        const current = get();
+        const inMemory = new Set(current.releases.map((r) => r.file.contentHash));
+        const releases = [...current.releases, ...stored.filter((r) => !inMemory.has(r.file.contentHash))];
+
+        const untouched = current.fileEntries.length === 0 && current.view === 'import';
+        set({
+          releases,
+          graph: releases.length > 0 ? buildEstateGraph(releases) : null,
+          discardedStale,
+          hydrated: true,
+          // Navigate to the estate only when the user has not started anything.
+          ...(untouched && releases.length > 0 ? { view: 'browser' as ViewName } : {}),
+        });
+      })();
+      return hydrationPromise;
     },
 
     clearEverything: async () => {
