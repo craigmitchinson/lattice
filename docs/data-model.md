@@ -158,6 +158,33 @@ comparison, falling back to release created date) wins; all copies are
 recorded in a `DuplicateRecord` (kept + discarded, with files and
 versions) surfaced in the batch summary.
 
+### Resolved semantics
+
+Decisions the implementation makes where the rules above leave room:
+
+- **Duplicate provenance**: every copy of a duplicated item (winner and
+  discarded) contributes provenance and a `defined-in` edge; only the
+  winner's pages, stages and edges are built.
+- **Exception link roles**: all outgoing links of Exception, Recover and
+  Resume stages carry role `exception`; for those stage types any outgoing
+  link is exception flow, not normal success flow.
+- **Internal page calls**: a SubSheet call to a page of the same process
+  adds no estate-level edge; `page-of`/`stage-of` already capture it.
+- **Dual-level edges**: `calls-process`, `invokes-action` and the three
+  `references-*` types exist both item-level (with stage evidence) and
+  stage-level. Impact walks use only the item-level edge for these five
+  types so consumers are never double-counted; `action-of`,
+  `targets-element` and `element-of` have no item-level counterpart.
+- **Dynamic node keying**: dynamic targets are keyed by the lower-cased
+  raw expression; empty expressions collapse to one `(empty)` placeholder
+  per scope.
+- **Unresolved app-model elements**: one shared external element node per
+  owning object, not one per stage.
+- **String literals**: a queue or credential name input counts as literal
+  only when it matches `^"[^"]*"$`; anything else is dynamic.
+- **Impact root redirect**: impact on a stage or page resolves to its
+  owning process/object first and reports that node as the root.
+
 ### Indexes
 
 Built at ingest, held in memory:
