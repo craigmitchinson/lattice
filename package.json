@@ -1,0 +1,35 @@
+{
+  "name": "lattice",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "@fontsource/fraunces": "^5.2.5",
+    "@fontsource/jetbrains-mono": "^5.2.5",
+    "@rgrove/parse-xml": "^4.2.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "zustand": "^5.0.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.28.0",
+    "@types/react": "^19.1.6",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^4.5.1",
+    "eslint": "^9.28.0",
+    "fake-indexeddb": "^6.0.1",
+    "globals": "^16.2.0",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.33.1",
+    "vite": "^6.3.5",
+    "vitest": "^3.2.1"
+  }
+}

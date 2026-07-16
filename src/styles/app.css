@@ -1,0 +1,75 @@
+/* CCS brand system. Primary teal, cream background, red reserved for
+   genuine emphasis only. Tints are surface and category colour, never text. */
+:root {
+  --ccs-teal: #0b3239;
+  --ccs-cream: #faf7f2;
+  --ccs-red: #ff222f;
+  --ccs-red-deep: #e0432e;
+  --ccs-tint-pink: #ffccd9;
+  --ccs-tint-lilac: #ddbbff;
+  --ccs-tint-grey: #f8f8f8;
+  --ccs-tint-blush: #ffe2e8;
+  --ccs-tint-violet: #ede9ff;
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Mono', monospace;
+  --font-body:
+    system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--ccs-cream);
+  color: var(--ccs-teal);
+}
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.app-bar {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.75rem 1.25rem;
+  background: var(--ccs-teal);
+  color: var(--ccs-cream);
+}
+
+.wordmark {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.35rem;
+  letter-spacing: 0.01em;
+}
+
+.wordmark-stop {
+  color: var(--ccs-red);
+}
+
+.app-title {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  opacity: 0.85;
+}
+
+.app-main {
+  flex: 1;
+  overflow: auto;
+  padding: 1.25rem;
+}

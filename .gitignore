@@ -1,0 +1,10 @@
+# Release files must never enter the repository. They are imported at
+# runtime via the browser file picker only.
+*.bprelease
+/local-data/
+
+node_modules/
+dist/
+coverage/
+*.local
+.DS_Store

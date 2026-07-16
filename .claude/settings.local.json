@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm uninstall *)",
+      "Bash(rm -rf dist)",
+      "Bash(npm run *)",
+      "Bash(gh auth *)",
+      "Bash(git init *)",
+      "Bash(git add *)",
+      "Bash(git remote *)",
+      "Bash(git push *)",
+      "PowerShell(npm run build 2>&1)",
+      "Bash(npx tsc *)",
+      "Bash(curl -s http://localhost:5174/)",
+      "Bash(curl -s http://localhost:5174/src/App.tsx)",
+      "Read(//c/Users/Craig/AppData/Local/npm-cache/_npx/**)",
+      "Bash(node /c/Users/Craig/AppData/Local/Temp/claude/c--Users-Craig-OneDrive-Desktop-dashboard/a56a5ed2-ac65-448e-a989-640948b0c107/scratchpad/shot.mjs /c/Users/Craig/AppData/Local/Temp/claude/c--Users-Craig-OneDrive-Desktop-dashboard/a56a5ed2-ac65-448e-a989-640948b0c107/scratchpad)",
+      "Bash(git commit -q -m ' *)",
+      "Bash(rm -rf /c/Users/Craig/AppData/Local/Temp/claude/c--Users-Craig-OneDrive-Desktop-dashboard/ecb3b07c-6422-4044-9049-8d54d4eecf5d/scratchpad/analytics-push)",
+      "Bash(mkdir -p /c/Users/Craig/AppData/Local/Temp/claude/c--Users-Craig-OneDrive-Desktop-dashboard/ecb3b07c-6422-4044-9049-8d54d4eecf5d/scratchpad/analytics-push)",
+      "Bash(cp -r c:/Users/Craig/OneDrive/Desktop/dashboard/bp-sql-layer/. /c/Users/Craig/AppData/Local/Temp/claude/c--Users-Craig-OneDrive-Desktop-dashboard/ecb3b07c-6422-4044-9049-8d54d4eecf5d/scratchpad/analytics-push/)",
+      "Read(//c/Users/Craig/AppData/Local/Temp/claude/c--Users-Craig-OneDrive-Desktop-dashboard/ecb3b07c-6422-4044-9049-8d54d4eecf5d/scratchpad/**)",
+      "Bash(git config *)",
+      "Bash(echo \"name=$\\(git config user.name\\)\")",
+      "Bash(echo \"email=$\\(git config user.email\\)\")"
+    ]
+  }
+}
