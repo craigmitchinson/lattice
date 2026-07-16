@@ -253,6 +253,11 @@ export interface ParsedProcess {
   version: string | null;
   bpversion: string | null;
   narrative: string | null;
+  /**
+   * Derived from page-level published flags. Meaningful for objects, where
+   * published pages are the object's actions; for processes it is usually
+   * false and must not be read as "process is published in Blue Prism".
+   */
   published: boolean;
   pages: ParsedPage[];
   /** Objects only. */
