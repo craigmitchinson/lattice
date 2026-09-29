@@ -1,0 +1,11 @@
+# Blue Prism internal objects and the input names used to identify the item used.
+# Correct these against a real 7.2 export if they differ.
+work_queues:
+  object_name: Work Queues
+  queue_name_inputs:
+    - Queue Name
+credentials:
+  object_name: Credentials
+  credential_name_inputs:
+    - Credentials Name
+    - Name

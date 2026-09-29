@@ -1,0 +1,51 @@
+"""Owns the findings list of SPEC section 6.5, derived from the estate, edges and metrics."""
+
+from __future__ import annotations
+
+from collections import Counter
+
+from bpanalyse.metrics import MetricRow, dead_page_ids
+from bpanalyse.model import Edge, Estate, Finding
+
+
+def compute_findings(estate: Estate, edges: list[Edge], metrics: list[MetricRow]) -> list[Finding]:
+    out: list[Finding] = []
+    stage_name = {s.id: s.name for pd in estate.processes for s in pd.stages}
+    page_name = {pg.id: pg.name for pd in estate.processes for pg in pd.pages}
+    dead = dead_page_ids(estate, edges)
+    hash_counts = Counter(c.code_hash for pd in estate.processes for c in pd.code_stages)
+    owner = {pg.id: pd for pd in estate.processes for pg in pd.pages}
+    page_of = {s.id: s.page_id for pd in estate.processes for s in pd.stages}
+    for m in metrics:
+        if m.type == "object" and m.values["orphan"]:
+            out.append(Finding("orphan", m.name, m.type, "", "", m.id))
+    for pd in estate.processes:
+        p = pd.process
+        for pg in pd.pages:
+            if pg.id in dead:
+                out.append(Finding("dead_page", p.name, p.type, pg.name, "", pg.id))
+        for c in pd.code_stages:
+            if hash_counts[c.code_hash] > 1:
+                out.append(Finding("duplicate_code", p.name, p.type, page_name.get(page_of[c.stage_id], ""), stage_name[c.stage_id], c.code_hash))
+        for mi in pd.masked:
+            out.append(Finding("masked_literal", p.name, p.type, page_name.get(mi.page_id, ""), stage_name[mi.stage_id], mi.patterns))
+        if p.type == "process":
+            by_page: dict[str, set[str]] = {}
+            for s in pd.stages:
+                by_page.setdefault(s.page_id, set()).add(s.type)
+            for pg in pd.pages:
+                types = by_page.get(pg.id, set())
+                if "Action" in types and "Recover" not in types:
+                    out.append(Finding("missing_exception_handling", p.name, p.type, pg.name, "", pg.id))
+    for name, (patterns, _) in estate.env_masks.items():
+        out.append(Finding("masked_literal", name, "environment_variable", "", "", patterns))
+    for e in edges:
+        pd = owner.get(e.from_id) or next((d for d in estate.processes if d.process.id == e.from_id), None)
+        if pd is None:
+            continue
+        page = page_name.get(page_of.get(e.evidence_stage_id, ""), "")
+        if e.unresolved:
+            out.append(Finding("unresolved_ref", pd.process.name, pd.process.type, page, stage_name.get(e.evidence_stage_id, ""), e.edge_type))
+        if e.edge_type == "calls_object" and e.to_type == "external_object":
+            out.append(Finding("external_object", pd.process.name, pd.process.type, page, stage_name.get(e.evidence_stage_id, ""), e.to_id))
+    return sorted(out, key=lambda f: (f.finding_type, f.entity_name, f.page_name, f.stage_name, f.detail))
