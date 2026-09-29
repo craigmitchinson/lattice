@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bpr:release xmlns:bpr="http://www.blueprism.co.uk/product/release">
+  <bpr:name>Claims Estate Core</bpr:name>
+  <bpr:created>2026-03-10T09:00:00Z</bpr:created>
+  <bpr:package-id>0026193d-fd26-1484-fe26-1617fb26115e</bpr:package-id>
+  <bpr:package-name>claims-core</bpr:package-name>
+  <bpr:user-created-by>fixture</bpr:user-created-by>
+  <bpr:contents count="7">
+    <bpr:process id="0e3d660f-0f3d-67a2-103d-6935093d5e30" name="Claims Intake"/>
+    <bpr:process id="ec8b1136-eb8b-0fa3-ea8b-0e10f18b1915" name="Claims Notify"/>
+    <bpr:object id="52c37278-55c3-7731-54c3-759e57c37a57" name="Policy Lookup"/>
+    <bpr:object id="17be402a-16be-3e97-15be-3d0414be3b71" name="Utility Strings"/>
+    <bpr:work-queue id="803ac814-833a-cccd-823a-cb3a7d3ac35b" name="Claims Queue"/>
+    <bpr:environment-variable name="API Base URL"/>
+    <bpr:credential id="b3e57ad0-b6e5-7f89-b5e5-7df6b8e582af" name="Policy API"/>
+  </bpr:contents>
+  <bpr:process id="0e3d660f-0f3d-67a2-103d-6935093d5e30" name="Claims Intake" bpversion="7.2.1">
+    <process id="0e3d660f-0f3d-67a2-103d-6935093d5e30" name="Claims Intake" version="1.3" bpversion="7.2.1" narrative="Takes claims from the queue and looks up policy status.">
+      <subsheet subsheetid="6684b2b1-6384-adf8-6484-af8b6984b76a" type="MainPage" published="False">
+        <name>Main Page</name>
+      </subsheet>
+      <subsheet subsheetid="102471ed-0d24-6d34-0e24-6ec70b246a0e" type="Normal" published="False">
+        <name>Validate Claim</name>
+      </subsheet>
+      <subsheet subsheetid="5393b1ef-5493-b382-5593-b5154e93aa10" type="Normal" published="False">
+        <name>Old Validation</name>
+      </subsheet>
+      <stage stageid="983efbd2-973e-fa3f-963e-f8ac953ef719" name="Start" type="Start">
+        <subsheetid>6684b2b1-6384-adf8-6484-af8b6984b76a</subsheetid>
+        <display x="560" y="20"/>
+        <onsuccess>a8dd92e5-a5dd-8e2c-a6dd-8fbfa3dd8b06</onsuccess>
+      </stage>
+      <stage stageid="a8dd92e5-a5dd-8e2c-a6dd-8fbfa3dd8b06" name="Policy Number" type="Data">
+        <subsheetid>6684b2b1-6384-adf8-6484-af8b6984b76a</subsheetid>
+        <display x="650" y="20"/>
+        <onsuccess>71b17c58-74b1-8111-73b1-7f7e76b18437</onsuccess>
+        <datatype>text</datatype>
+        <exposure>None</exposure>
+      </stage>
+      <stage stageid="71b17c58-74b1-8111-73b1-7f7e76b18437" name="Status" type="Data">
+        <subsheetid>6684b2b1-6384-adf8-6484-af8b6984b76a</subsheetid>
+        <display x="740" y="20"/>
+        <onsuccess>bcee4fae-bbee-4e1b-baee-4c88c1ee578d</onsuccess>
+        <datatype>text</datatype>
+        <exposure>None</exposure>
+      </stage>
+      <stage stageid="bcee4fae-bbee-4e1b-baee-4c88c1ee578d" name="Item ID" type="Data">
+        <subsheetid>6684b2b1-6384-adf8-6484-af8b6984b76a</subsheetid>
+        <display x="830" y="20"/>
+        <onsuccess>e7075b4e-e607-59bb-e507-5828ec07632d</onsuccess>
+        <datatype>text</datatype>
+        <exposure>None</exposure>
+      </stage>
+      <stage stageid="e7075b4e-e607-59bb-e507-5828ec07632d" name="API Base URL" type="Data">
+        <subsheetid>6684b2b1-6384-adf8-6484-af8b6984b76a</subsheetid>
+        <display x="920" y="20"/>
+        <onsuccess>b144a1ea-b044-a057-af44-9ec4ae449d31</onsuccess>
+        <datatype>text</datatype>
+        <exposure>Environment</exposure>
+      </stage>
+      <stage stageid="b144a1ea-b044-a057-af44-9ec4ae449d31" name="Ops Mailbox" type="Data">
+        <subsheetid>6684b2b1-6384-adf8-6484-af8b6984b76a</subsheetid>
+        <display x="1010" y="80"/>
+        <onsuccess>b74c3ee3-b84c-4076-b94c-4209ba4c439c</onsuccess>
+        <datatype>text</datatype>
+        <initialvalue>ops.mailbox@example.com</initialvalue>
+        <exposure>None</exposure>
+      </stage>
+      <stage stageid="b74c3ee3-b84c-4076-b94c-4209ba4c439c" name="Claims" type="Collection">
+        <subsheetid>6684b2b1-6384-adf8-6484-af8b6984b76a</subsheetid>
+        <display x="20" y="80"/>
+        <onsuccess>0c93e33b-0d93-e4ce-0e93-e6610f93e7f4</onsuccess>
+        <datatype>collection</datatype>
+        <exposure>None</exposure>
+        <collectioninfo>
+          <field name="Reference" type="text"/>
+        </collectioninfo>
+      </stage>
+      <stage stageid="0c93e33b-0d93-e4ce-0e93-e6610f93e7f4" name="Get Next Claim" type="Action">
+        <subsheetid>6684b2b1-6384-adf8-6484-af8b6984b76a</subsheetid>
+        <display x="110" y="80"/>
+        <onsuccess>27e99b88-2ae9-a041-29e9-9eae2ce9a367</onsuccess>
+        <resource object="Work Queues" action="Get Next Item"/>
+        <inputs>
+          <input name="Queue Name" type="text" expr="&quot;Claims Queue&quot;"/>
+        </inputs>
+        <outputs>
+          <output name="Item ID" type="text" stage="Item ID"/>
+        </outputs>
+      </stage>
+      <stage stageid="27e99b88-2ae9-a041-29e9-9eae2ce9a367" name="Validate" type="SubSheet">
+        <subsheetid>6684b2b1-6384-adf8-6484-af8b6984b76a</subsheetid>
+        <display x="200" y="80"/>
+        <onsuccess>a9f31a3b-aaf3-1bce-abf3-1d61acf31ef4</onsuccess>
+        <target subsheetid="102471ed-0d24-6d34-0e24-6ec70b246a0e"/>
+      </stage>
+      <stage stageid="a9f31a3b-aaf3-1bce-abf3-1d61acf31ef4" name="Get API Credential" type="Action">
+        <subsheetid>6684b2b1-6384-adf8-6484-af8b6984b76a</subsheetid>
+        <display x="290" y="80"/>
+        <onsuccess>140fcbbe-130f-ca2b-120f-c898190fd39d</onsuccess>
+        <resource object="Credentials" action="Get"/>
+        <inputs>
+          <input name="Credentials Name" type="text" expr="&quot;Policy API&quot;"/>
+        </inputs>
+      </stage>
+      <stage stageid="140fcbbe-130f-ca2b-120f-c898190fd39d" name="Lookup Policy" type="Action">
+        <subsheetid>6684b2b1-6384-adf8-6484-af8b6984b76a</subsheetid>
+        <display x="380" y="80"/>
+        <onsuccess>aefe73ed-abfe-6f34-acfe-70c7a9fe6c0e</onsuccess>
+        <resource object="Policy Lookup" action="Get Policy"/>
+        <inputs>
+          <input name="Policy Number" type="text" expr="[Policy Number]"/>
+        </inputs>
+        <outputs>
+          <output name="Status" type="text" stage="Status"/>
+        </outputs>
+      </stage>
+      <stage stageid="aefe73ed-abfe-6f34-acfe-70c7a9fe6c0e" name="Build Message" type="Calculation">
+        <subsheetid>6684b2b1-6384-adf8-6484-af8b6984b76a</subsheetid>
+        <display x="470" y="80"/>
+        <onsuccess>2e9ef50b-2f9e-f69e-309e-f831319ef9c4</onsuccess>
+        <calculation expression="&quot;Policy &quot; &amp; [Policy Number] &amp; &quot; is &quot; &amp; [Status]" stage="Status"/>
+      </stage>
+      <stage stageid="2e9ef50b-2f9e-f69e-309e-f831319ef9c4" name="Notify" type="Process">
+        <subsheetid>6684b2b1-6384-adf8-6484-af8b6984b76a</subsheetid>
+        <display x="560" y="80"/>
+        <onsuccess>35db5bee-34db-5a5b-33db-58c83adb63cd</onsuccess>
+        <target processname="Claims Notify" processid="ec8b1136-eb8b-0fa3-ea8b-0e10f18b1915"/>
+        <inputs>
+          <input name="Message" type="text" expr="[Status]"/>
+        </inputs>
+      </stage>
+      <stage stageid="35db5bee-34db-5a5b-33db-58c83adb63cd" name="Mark Complete" type="Action">
+        <subsheetid>6684b2b1-6384-adf8-6484-af8b6984b76a</subsheetid>
+        <display x="650" y="80"/>
+        <onsuccess>2ec400fe-2dc3-ff6b-2cc3-fdd833c408dd</onsuccess>
+        <resource object="Work Queues" action="Mark Completed"/>
+        <inputs>
+          <input name="Item ID" type="text" expr="[Item ID]"/>
+        </inputs>
+      </stage>
+      <stage stageid="2ec400fe-2dc3-ff6b-2cc3-fdd833c408dd" name="Recover" type="Recover">
+        <subsheetid>6684b2b1-6384-adf8-6484-af8b6984b76a</subsheetid>
+        <display x="740" y="80"/>
+        <onsuccess>70ae404d-6dae-3b94-6eae-3d276bae386e</onsuccess>
+      </stage>
+      <stage stageid="70ae404d-6dae-3b94-6eae-3d276bae386e" name="Resume" type="Resume">
+        <subsheetid>6684b2b1-6384-adf8-6484-af8b6984b76a</subsheetid>
+        <display x="830" y="80"/>
+        <onsuccess>ab33f53b-ac33-f6ce-ad33-f861ae33f9f4</onsuccess>
+      </stage>
+      <stage stageid="ab33f53b-ac33-f6ce-ad33-f861ae33f9f4" name="End" type="End">
+        <subsheetid>6684b2b1-6384-adf8-6484-af8b6984b76a</subsheetid>
+        <display x="920" y="80"/>
+      </stage>
+      <stage stageid="84e278fe-83e2-776b-82e2-75d889e280dd" name="Start" type="Start">
+        <subsheetid>102471ed-0d24-6d34-0e24-6ec70b246a0e</subsheetid>
+        <display x="20" y="20"/>
+        <onsuccess>b0626b4c-b362-7005-b262-6e72ad626693</onsuccess>
+      </stage>
+      <stage stageid="b0626b4c-b362-7005-b262-6e72ad626693" name="Is Valid" type="Decision">
+        <subsheetid>102471ed-0d24-6d34-0e24-6ec70b246a0e</subsheetid>
+        <display x="110" y="20"/>
+        <onsuccess>9100d6f9-8e00-d240-8f00-d3d39400dbb2</onsuccess>
+        <decision expression="Len([Policy Number]) &gt; 0"/>
+        <ontrue>05c3e56f-06c3-e702-07c3-e89500c3dd90</ontrue>
+        <onfalse>9100d6f9-8e00-d240-8f00-d3d39400dbb2</onfalse>
+      </stage>
+      <stage stageid="9100d6f9-8e00-d240-8f00-d3d39400dbb2" name="Invalid Claim" type="Exception">
+        <subsheetid>102471ed-0d24-6d34-0e24-6ec70b246a0e</subsheetid>
+        <display x="200" y="20"/>
+        <onsuccess>05c3e56f-06c3-e702-07c3-e89500c3dd90</onsuccess>
+        <exception type="Business Exception" detail="&quot;Missing policy number&quot;"/>
+      </stage>
+      <stage stageid="05c3e56f-06c3-e702-07c3-e89500c3dd90" name="End" type="End">
+        <subsheetid>102471ed-0d24-6d34-0e24-6ec70b246a0e</subsheetid>
+        <display x="290" y="20"/>
+      </stage>
+      <stage stageid="37725e78-3a72-6331-3972-619e3c726657" name="Start" type="Start">
+        <subsheetid>5393b1ef-5493-b382-5593-b5154e93aa10</subsheetid>
+        <display x="380" y="20"/>
+        <onsuccess>f912a375-f612-9ebc-f712-a04ff4129b96</onsuccess>
+      </stage>
+      <stage stageid="f912a375-f612-9ebc-f712-a04ff4129b96" name="End" type="End">
+        <subsheetid>5393b1ef-5493-b382-5593-b5154e93aa10</subsheetid>
+        <display x="470" y="20"/>
+      </stage>
+    </process>
+  </bpr:process>
+  <bpr:process id="ec8b1136-eb8b-0fa3-ea8b-0e10f18b1915" name="Claims Notify" bpversion="7.2.1">
+    <process id="ec8b1136-eb8b-0fa3-ea8b-0e10f18b1915" name="Claims Notify" version="1.0" bpversion="7.2.1">
+      <subsheet subsheetid="362bb2f6-352b-b163-342b-afd03b2bbad5" type="MainPage" published="False">
+        <name>Main Page</name>
+      </subsheet>
+      <stage stageid="f41dc9ed-f11d-c534-f21d-c6c7ef1dc20e" name="Start" type="Start">
+        <subsheetid>362bb2f6-352b-b163-342b-afd03b2bbad5</subsheetid>
+        <display x="1010" y="140"/>
+        <onsuccess>8e4fd8a6-8d4f-d713-8c4f-d580934fe085</onsuccess>
+      </stage>
+      <stage stageid="8e4fd8a6-8d4f-d713-8c4f-d580934fe085" name="Message" type="Data">
+        <subsheetid>362bb2f6-352b-b163-342b-afd03b2bbad5</subsheetid>
+        <display x="20" y="140"/>
+        <onsuccess>ca85f9d1-c785-f518-c885-f6abcd85fe8a</onsuccess>
+        <datatype>text</datatype>
+        <exposure>None</exposure>
+      </stage>
+      <stage stageid="ca85f9d1-c785-f518-c885-f6abcd85fe8a" name="Queue Name" type="Data">
+        <subsheetid>362bb2f6-352b-b163-342b-afd03b2bbad5</subsheetid>
+        <display x="110" y="140"/>
+        <onsuccess>b7074821-b407-4368-b507-44fbba074cda</onsuccess>
+        <datatype>text</datatype>
+        <exposure>None</exposure>
+      </stage>
+      <stage stageid="b7074821-b407-4368-b507-44fbba074cda" name="Status" type="Data">
+        <subsheetid>362bb2f6-352b-b163-342b-afd03b2bbad5</subsheetid>
+        <display x="200" y="140"/>
+        <onsuccess>76a777fd-73a7-7344-74a7-74d771a7701e</onsuccess>
+        <datatype>text</datatype>
+        <exposure>None</exposure>
+      </stage>
+      <stage stageid="76a777fd-73a7-7344-74a7-74d771a7701e" name="Lookup Policy Again" type="Action">
+        <subsheetid>362bb2f6-352b-b163-342b-afd03b2bbad5</subsheetid>
+        <display x="290" y="140"/>
+        <onsuccess>4c47ea4f-4d47-ebe2-4e47-ed754747e270</onsuccess>
+        <resource object="Policy Lookup" action="Get Policy"/>
+        <inputs>
+          <input name="Policy Number" type="text" expr="&quot;P123&quot;"/>
+        </inputs>
+        <outputs>
+          <output name="Status" type="text" stage="Status"/>
+        </outputs>
+      </stage>
+      <stage stageid="4c47ea4f-4d47-ebe2-4e47-ed754747e270" name="Add To Audit Queue" type="Action">
+        <subsheetid>362bb2f6-352b-b163-342b-afd03b2bbad5</subsheetid>
+        <display x="380" y="140"/>
+        <onsuccess>995c1c69-965c-17b0-975c-19439c5c2122</onsuccess>
+        <resource object="Work Queues" action="Add To Queue"/>
+        <inputs>
+          <input name="Queue Name" type="text" expr="[Queue Name]"/>
+        </inputs>
+      </stage>
+      <stage stageid="995c1c69-965c-17b0-975c-19439c5c2122" name="Send Email" type="Action">
+        <subsheetid>362bb2f6-352b-b163-342b-afd03b2bbad5</subsheetid>
+        <display x="470" y="140"/>
+        <onsuccess>fe2b5c40-012b-60f9-002b-5f66032b641f</onsuccess>
+        <resource object="External Mailer" action="Send"/>
+        <inputs>
+          <input name="Body" type="text" expr="[Message]"/>
+        </inputs>
+      </stage>
+      <stage stageid="fe2b5c40-012b-60f9-002b-5f66032b641f" name="End" type="End">
+        <subsheetid>362bb2f6-352b-b163-342b-afd03b2bbad5</subsheetid>
+        <display x="560" y="140"/>
+      </stage>
+    </process>
+  </bpr:process>
+  <bpr:object id="52c37278-55c3-7731-54c3-759e57c37a57" name="Policy Lookup" bpversion="7.2.1">
+    <process id="52c37278-55c3-7731-54c3-759e57c37a57" name="Policy Lookup" version="1.4" bpversion="7.2.1" type="object">
+      <subsheet subsheetid="fd674e77-fe67-500a-ff67-519df8674698" type="MainPage" published="False">
+        <name>Initialise</name>
+      </subsheet>
+      <subsheet subsheetid="fbf7865e-faf7-84cb-f9f7-833800f78e3d" type="CleanUp" published="False">
+        <name>Clean Up</name>
+      </subsheet>
+      <subsheet subsheetid="40c57506-3fc5-7373-3ec5-71e045c57ce5" type="Normal" published="True">
+        <name>Get Policy</name>
+      </subsheet>
+      <subsheet subsheetid="ed72e4ba-ec72-e327-eb72-e194ea72e001" type="Normal" published="False">
+        <name>Unused Helper</name>
+      </subsheet>
+      <appdef>
+        <applicationname>Policy Admin</applicationname>
+        <element id="9ef0fc9a-9df0-fb07-9cf0-f9749bf0f7e1" name="Main Window">
+          <type>Window</type>
+          <element id="220de9ba-210d-e827-200d-e6941f0de501" name="Policy Number Field">
+            <type>Field</type>
+          </element>
+          <element id="6eb30581-6bb3-00c8-6cb3-025b71b30a3a" name="Search Button">
+            <type>Button</type>
+          </element>
+          <element id="dcb9c22f-ddb9-c3c2-deb9-c555d7b9ba50" name="Status Label">
+            <type>Label</type>
+          </element>
+        </element>
+      </appdef>
+      <stage stageid="d56c8400-d86c-88b9-d76c-8726da6c8bdf" name="Start" type="Start">
+        <subsheetid>fd674e77-fe67-500a-ff67-519df8674698</subsheetid>
+        <display x="650" y="140"/>
+        <onsuccess>37ecbfed-34ec-bb34-35ec-bcc732ecb80e</onsuccess>
+      </stage>
+      <stage stageid="37ecbfed-34ec-bb34-35ec-bcc732ecb80e" name="End" type="End">
+        <subsheetid>fd674e77-fe67-500a-ff67-519df8674698</subsheetid>
+        <display x="740" y="140"/>
+      </stage>
+      <stage stageid="d2327f75-cf32-7abc-d032-7c4fcd327796" name="Start" type="Start">
+        <subsheetid>fbf7865e-faf7-84cb-f9f7-833800f78e3d</subsheetid>
+        <display x="830" y="140"/>
+        <onsuccess>3f4deef8-424d-f3b1-414d-f21e444df6d7</onsuccess>
+      </stage>
+      <stage stageid="3f4deef8-424d-f3b1-414d-f21e444df6d7" name="End" type="End">
+        <subsheetid>fbf7865e-faf7-84cb-f9f7-833800f78e3d</subsheetid>
+        <display x="920" y="140"/>
+      </stage>
+      <stage stageid="463d731d-433d-6e64-443d-6ff7413d6b3e" name="Start" type="Start">
+        <subsheetid>40c57506-3fc5-7373-3ec5-71e045c57ce5</subsheetid>
+        <display x="1010" y="200"/>
+        <onsuccess>3f10177a-3e10-15e7-3d10-14543c1012c1</onsuccess>
+      </stage>
+      <stage stageid="3f10177a-3e10-15e7-3d10-14543c1012c1" name="Policy Number" type="Data">
+        <subsheetid>40c57506-3fc5-7373-3ec5-71e045c57ce5</subsheetid>
+        <display x="20" y="200"/>
+        <onsuccess>26d531d1-23d5-2d18-24d5-2eab29d5368a</onsuccess>
+        <datatype>text</datatype>
+        <exposure>None</exposure>
+      </stage>
+      <stage stageid="26d531d1-23d5-2d18-24d5-2eab29d5368a" name="Status" type="Data">
+        <subsheetid>40c57506-3fc5-7373-3ec5-71e045c57ce5</subsheetid>
+        <display x="110" y="200"/>
+        <onsuccess>ec05fd59-e905-f8a0-ea05-fa33ef060212</onsuccess>
+        <datatype>text</datatype>
+        <exposure>None</exposure>
+      </stage>
+      <stage stageid="ec05fd59-e905-f8a0-ea05-fa33ef060212" name="Write Policy Number" type="Write">
+        <subsheetid>40c57506-3fc5-7373-3ec5-71e045c57ce5</subsheetid>
+        <display x="200" y="200"/>
+        <onsuccess>470ea267-480e-a3fa-490e-a58d420e9a88</onsuccess>
+        <step>
+          <element id="220de9ba-210d-e827-200d-e6941f0de501"/>
+          <action name="Value"/>
+          <expr>[Policy Number]</expr>
+        </step>
+      </stage>
+      <stage stageid="470ea267-480e-a3fa-490e-a58d420e9a88" name="Click Search" type="Navigate">
+        <subsheetid>40c57506-3fc5-7373-3ec5-71e045c57ce5</subsheetid>
+        <display x="290" y="200"/>
+        <onsuccess>ac956d97-ad95-6f2a-ae95-70bda79565b8</onsuccess>
+        <step>
+          <element id="6eb30581-6bb3-00c8-6cb3-025b71b30a3a"/>
+          <action name="ClickCentre"/>
+        </step>
+      </stage>
+      <stage stageid="ac956d97-ad95-6f2a-ae95-70bda79565b8" name="Read Status" type="Read">
+        <subsheetid>40c57506-3fc5-7373-3ec5-71e045c57ce5</subsheetid>
+        <display x="380" y="200"/>
+        <onsuccess>5377dba3-5477-dd36-5577-dec95677e05c</onsuccess>
+        <step>
+          <element id="dcb9c22f-ddb9-c3c2-deb9-c555d7b9ba50"/>
+          <action name="Text"/>
+          <storein>Status</storein>
+        </step>
+      </stage>
+      <stage stageid="5377dba3-5477-dd36-5577-dec95677e05c" name="Normalise Status" type="Code">
+        <subsheetid>40c57506-3fc5-7373-3ec5-71e045c57ce5</subsheetid>
+        <display x="470" y="200"/>
+        <onsuccess>fab2aefd-f7b2-aa44-f8b2-abd7f5b2a71e</onsuccess>
+        <code language="visualbasic"><![CDATA[Dim s As String = Input1
+    Result = s.Trim().ToUpper()]]></code>
+        <inputs>
+          <input name="Input1" type="text" expr="[Status]"/>
+        </inputs>
+        <outputs>
+          <output name="Result" type="text" stage="Status"/>
+        </outputs>
+      </stage>
+      <stage stageid="fab2aefd-f7b2-aa44-f8b2-abd7f5b2a71e" name="Recover" type="Recover">
+        <subsheetid>40c57506-3fc5-7373-3ec5-71e045c57ce5</subsheetid>
+        <display x="560" y="200"/>
+        <onsuccess>369451e8-3994-56a1-3894-550e3b9459c7</onsuccess>
+      </stage>
+      <stage stageid="369451e8-3994-56a1-3894-550e3b9459c7" name="Resume" type="Resume">
+        <subsheetid>40c57506-3fc5-7373-3ec5-71e045c57ce5</subsheetid>
+        <display x="650" y="200"/>
+        <onsuccess>d7773e70-da77-4329-d977-4196dc77464f</onsuccess>
+      </stage>
+      <stage stageid="d7773e70-da77-4329-d977-4196dc77464f" name="End" type="End">
+        <subsheetid>40c57506-3fc5-7373-3ec5-71e045c57ce5</subsheetid>
+        <display x="740" y="200"/>
+      </stage>
+      <stage stageid="1f7c6451-1c7c-5f98-1d7c-612b227c690a" name="Start" type="Start">
+        <subsheetid>ed72e4ba-ec72-e327-eb72-e194ea72e001</subsheetid>
+        <display x="830" y="200"/>
+        <onsuccess>ca1bd9fc-cd1b-deb5-cc1b-dd22c71bd543</onsuccess>
+      </stage>
+      <stage stageid="ca1bd9fc-cd1b-deb5-cc1b-dd22c71bd543" name="End" type="End">
+        <subsheetid>ed72e4ba-ec72-e327-eb72-e194ea72e001</subsheetid>
+        <display x="920" y="200"/>
+      </stage>
+    </process>
+  </bpr:object>
+  <bpr:object id="17be402a-16be-3e97-15be-3d0414be3b71" name="Utility Strings" bpversion="7.2.1">
+    <process id="17be402a-16be-3e97-15be-3d0414be3b71" name="Utility Strings" version="2.0" bpversion="7.2.1" type="object">
+      <subsheet subsheetid="10d6cbe5-0dd6-c72c-0ed6-c8bf0bd6c406" type="MainPage" published="False">
+        <name>Initialise</name>
+      </subsheet>
+      <subsheet subsheetid="374bfcfa-364b-fb67-354b-f9d4344bf841" type="Normal" published="True">
+        <name>Upper Trim</name>
+      </subsheet>
+      <stage stageid="97c93356-96c9-31c3-95c9-30309cc93b35" name="Start" type="Start">
+        <subsheetid>10d6cbe5-0dd6-c72c-0ed6-c8bf0bd6c406</subsheetid>
+        <display x="1010" y="260"/>
+        <onsuccess>3ab9abf7-3bb9-ad8a-3cb9-af1d35b9a418</onsuccess>
+      </stage>
+      <stage stageid="3ab9abf7-3bb9-ad8a-3cb9-af1d35b9a418" name="End" type="End">
+        <subsheetid>10d6cbe5-0dd6-c72c-0ed6-c8bf0bd6c406</subsheetid>
+        <display x="20" y="260"/>
+      </stage>
+      <stage stageid="9632d591-9332-d0d8-9432-d26b9932da4a" name="Start" type="Start">
+        <subsheetid>374bfcfa-364b-fb67-354b-f9d4344bf841</subsheetid>
+        <display x="110" y="260"/>
+        <onsuccess>de3a64e4-e13a-699d-e03a-680adb3a602b</onsuccess>
+      </stage>
+      <stage stageid="de3a64e4-e13a-699d-e03a-680adb3a602b" name="Input1" type="Data">
+        <subsheetid>374bfcfa-364b-fb67-354b-f9d4344bf841</subsheetid>
+        <display x="200" y="260"/>
+        <onsuccess>cae434d2-c9e4-333f-c8e4-31acc7e43019</onsuccess>
+        <datatype>text</datatype>
+        <exposure>None</exposure>
+      </stage>
+      <stage stageid="cae434d2-c9e4-333f-c8e4-31acc7e43019" name="Result" type="Data">
+        <subsheetid>374bfcfa-364b-fb67-354b-f9d4344bf841</subsheetid>
+        <display x="290" y="260"/>
+        <onsuccess>9c153e80-9f15-4339-9e15-41a6a115465f</onsuccess>
+        <datatype>text</datatype>
+        <exposure>None</exposure>
+      </stage>
+      <stage stageid="9c153e80-9f15-4339-9e15-41a6a115465f" name="Upper Trim Code" type="Code">
+        <subsheetid>374bfcfa-364b-fb67-354b-f9d4344bf841</subsheetid>
+        <display x="380" y="260"/>
+        <onsuccess>506a643c-536a-68f5-526a-67624d6a5f83</onsuccess>
+        <code language="visualbasic"><![CDATA[  Dim s As String = Input1
+    
+      Result = s.Trim().ToUpper()  ]]></code>
+        <inputs>
+          <input name="Input1" type="text" expr="[Input1]"/>
+        </inputs>
+        <outputs>
+          <output name="Result" type="text" stage="Result"/>
+        </outputs>
+      </stage>
+      <stage stageid="506a643c-536a-68f5-526a-67624d6a5f83" name="End" type="End">
+        <subsheetid>374bfcfa-364b-fb67-354b-f9d4344bf841</subsheetid>
+        <display x="470" y="260"/>
+      </stage>
+    </process>
+  </bpr:object>
+  <bpr:work-queue id="803ac814-833a-cccd-823a-cb3a7d3ac35b" name="Claims Queue">
+    <keyfield>Reference</keyfield>
+    <maxattempts>3</maxattempts>
+  </bpr:work-queue>
+  <bpr:environment-variable name="API Base URL" datatype="text" value="https://policy.internal.example.com/api" description="Policy API base"/>
+  <bpr:credential id="b3e57ad0-b6e5-7f89-b5e5-7df6b8e582af" name="Policy API">
+    <description>Service account for the policy API</description>
+  </bpr:credential>
+</bpr:release>

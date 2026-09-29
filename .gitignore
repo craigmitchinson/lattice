@@ -9,3 +9,12 @@ coverage/
 *.tsbuildinfo
 *.local
 .DS_Store
+
+# bpanalyse: committed synthetic fixtures are the only release files allowed in
+# the repo. Real exports go in bpanalyse/input/ and never leave the machine.
+!bpanalyse/fixtures/releases/*.bprelease
+bpanalyse/input/
+bpanalyse/output/
+__pycache__/
+.pytest_cache/
+*.egg-info/

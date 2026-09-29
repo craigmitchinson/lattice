@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bpr:release xmlns:bpr="http://www.blueprism.co.uk/product/release">
+  <bpr:name>Every Stage Type</bpr:name>
+  <bpr:created>2026-01-15T08:00:00Z</bpr:created>
+  <bpr:package-id>746fddd4-776f-e28d-766f-e0fa716fd91b</bpr:package-id>
+  <bpr:package-name>every-stage-type</bpr:package-name>
+  <bpr:contents count="4">
+    <bpr:process id="eea6c19b-efa6-c32e-f0a6-c4c1f1a6c654" name="Companion Process"/>
+    <bpr:object id="280931d8-2b09-3691-2a09-34fe2d0939b7" name="UI Automation Object"/>
+    <bpr:object id="aea8529f-afa8-5432-b0a8-55c5a9a84ac0" name="Utility Object"/>
+    <bpr:tile id="661b7f29-631b-7a70-641b-7c03691b83e2" name="Throughput Tile"/>
+  </bpr:contents>
+  <bpr:process id="eea6c19b-efa6-c32e-f0a6-c4c1f1a6c654" name="Companion Process" bpversion="7.2.1">
+    <process id="eea6c19b-efa6-c32e-f0a6-c4c1f1a6c654" name="Companion Process" version="1.0" bpversion="7.2.1">
+      <subsheet subsheetid="2b80555d-2880-50a4-2980-523726804d7e" type="MainPage" published="False">
+        <name>Main Page</name>
+      </subsheet>
+      <stage stageid="9622f5ce-9522-f43b-9422-f2a89b22fdad" name="Start" type="Start">
+        <subsheetid>2b80555d-2880-50a4-2980-523726804d7e</subsheetid>
+        <display x="20" y="20"/>
+        <onsuccess>50f350ff-51f3-5292-52f3-54254bf34920</onsuccess>
+      </stage>
+      <stage stageid="50f350ff-51f3-5292-52f3-54254bf34920" name="End" type="End">
+        <subsheetid>2b80555d-2880-50a4-2980-523726804d7e</subsheetid>
+        <display x="100" y="20"/>
+      </stage>
+      <stage stageid="b44467af-b544-6942-b644-6ad5af445fd0" name="Future Stage" type="FutureStage">
+        <subsheetid>2b80555d-2880-50a4-2980-523726804d7e</subsheetid>
+        <display x="900" y="900"/>
+      </stage>
+    </process>
+  </bpr:process>
+  <bpr:object id="280931d8-2b09-3691-2a09-34fe2d0939b7" name="UI Automation Object" bpversion="7.2.1">
+    <process id="280931d8-2b09-3691-2a09-34fe2d0939b7" name="UI Automation Object" version="1.0" bpversion="7.2.1" narrative="Exercises every known stage type." type="object">
+      <subsheet subsheetid="d02e0a18-d32e-0ed1-d22e-0d3ed52e11f7" type="MainPage" published="False">
+        <name>Main Page</name>
+      </subsheet>
+      <subsheet subsheetid="2d8dd32f-2e8d-d4c2-2f8d-d655288dcb50" type="Normal" published="False">
+        <name>Utility Page</name>
+      </subsheet>
+      <appdef>
+        <applicationname>SAP GUI</applicationname>
+        <element id="aa766853-ab76-69e6-ac76-6b79ad766d0c" name="Root">
+          <type>Application</type>
+          <element id="530910b3-5409-1246-5509-13d95609156c" name="Login Button">
+            <type>Button</type>
+          </element>
+          <element id="575e3bf8-5a5e-40b1-595e-3f1e5c5e43d7" name="Username Field">
+            <type>Field</type>
+          </element>
+        </element>
+      </appdef>
+      <stage stageid="97dee7e1-94de-e328-95de-e4bb9adeec9a" name="Start Stage" type="Start">
+        <subsheetid>d02e0a18-d32e-0ed1-d22e-0d3ed52e11f7</subsheetid>
+        <display x="75" y="120" w="60" h="30"/>
+        <onsuccess>43566f0d-4056-6a54-4156-6be73e56672e</onsuccess>
+      </stage>
+      <stage stageid="43566f0d-4056-6a54-4156-6be73e56672e" name="Decision Stage" type="Decision">
+        <narrative>Branches on the running counter.</narrative>
+        <subsheetid>d02e0a18-d32e-0ed1-d22e-0d3ed52e11f7</subsheetid>
+        <display x="150" y="120" w="60" h="30"/>
+        <onsuccess>044b5f9c-074b-6455-064b-62c2014b5ae3</onsuccess>
+        <decision expression="[Counter]&gt;1"/>
+        <ontrue>044b5f9c-074b-6455-064b-62c2014b5ae3</ontrue>
+        <onfalse>16d99378-19d9-9831-18d9-969e1bd99b57</onfalse>
+      </stage>
+      <stage stageid="044b5f9c-074b-6455-064b-62c2014b5ae3" name="Calculation Stage" type="Calculation">
+        <subsheetid>d02e0a18-d32e-0ed1-d22e-0d3ed52e11f7</subsheetid>
+        <display x="225" y="120" w="60" h="30"/>
+        <onsuccess>576b8478-5a6b-8931-596b-879e5c6b8c57</onsuccess>
+        <calculation expression="[a]+[b]" stage="Result"/>
+      </stage>
+      <stage stageid="576b8478-5a6b-8931-596b-879e5c6b8c57" name="MultipleCalculation Stage" type="MultipleCalculation">
+        <subsheetid>d02e0a18-d32e-0ed1-d22e-0d3ed52e11f7</subsheetid>
+        <display x="300" y="120" w="60" h="30"/>
+        <onsuccess>9308351c-9608-39d5-9508-384290083063</onsuccess>
+        <steps>
+          <calculation expression="[a]+[b]" stage="Result"/>
+          <calculation expression="[a]-[b]" stage="Diff"/>
+        </steps>
+      </stage>
+      <stage stageid="9308351c-9608-39d5-9508-384290083063" name="ChoiceStart Stage" type="ChoiceStart">
+        <subsheetid>d02e0a18-d32e-0ed1-d22e-0d3ed52e11f7</subsheetid>
+        <display x="375" y="120" w="60" h="30"/>
+        <onsuccess>9a500ced-9750-0834-9850-09c79550050e</onsuccess>
+        <choice name="Option A" expression="[x]=1" ontrue="9a500ced-9750-0834-9850-09c79550050e"/>
+        <choice name="Option B" expression="[x]=2" ontrue="dc005f23-dd00-60b6-de00-6249df0063dc"/>
+      </stage>
+      <stage stageid="9a500ced-9750-0834-9850-09c79550050e" name="ChoiceEnd Stage" type="ChoiceEnd">
+        <subsheetid>d02e0a18-d32e-0ed1-d22e-0d3ed52e11f7</subsheetid>
+        <display x="450" y="120" w="60" h="30"/>
+        <onsuccess>dc005f23-dd00-60b6-de00-6249df0063dc</onsuccess>
+      </stage>
+      <stage stageid="dc005f23-dd00-60b6-de00-6249df0063dc" name="Data Stage" type="Data">
+        <narrative>A plain data item.</narrative>
+        <subsheetid>d02e0a18-d32e-0ed1-d22e-0d3ed52e11f7</subsheetid>
+        <display x="525" y="120" w="60" h="30"/>
+        <onsuccess>36931c47-3793-1dda-3893-1f6d31931468</onsuccess>
+        <datatype>text</datatype>
+        <initialvalue>Hello</initialvalue>
+        <exposure>Session</exposure>
+        <alwaysinit/>
+      </stage>
+      <stage stageid="36931c47-3793-1dda-3893-1f6d31931468" name="Collection Stage" type="Collection">
+        <subsheetid>d02e0a18-d32e-0ed1-d22e-0d3ed52e11f7</subsheetid>
+        <display x="600" y="120" w="60" h="30"/>
+        <onsuccess>d8f85b41-d5f8-5688-d6f8-581bdbf85ffa</onsuccess>
+        <exposure>None</exposure>
+        <collectioninfo>
+          <field name="Reference" type="text"/>
+          <field name="Amount" type="number"/>
+        </collectioninfo>
+      </stage>
+      <stage stageid="d8f85b41-d5f8-5688-d6f8-581bdbf85ffa" name="Action Stage" type="Action">
+        <subsheetid>d02e0a18-d32e-0ed1-d22e-0d3ed52e11f7</subsheetid>
+        <display x="675" y="120" w="60" h="30"/>
+        <onsuccess>10be4f62-0fbe-4dcf-0ebe-4c3c0dbe4aa9</onsuccess>
+        <resource object="Utility Object" action="Do Something"/>
+        <inputs>
+          <input name="Input1" type="text" expr="&quot;value&quot;"/>
+        </inputs>
+        <outputs>
+          <output name="Output1" type="text" stage="Result"/>
+        </outputs>
+      </stage>
+      <stage stageid="10be4f62-0fbe-4dcf-0ebe-4c3c0dbe4aa9" name="SubSheet Stage" type="SubSheet">
+        <subsheetid>d02e0a18-d32e-0ed1-d22e-0d3ed52e11f7</subsheetid>
+        <display x="750" y="120" w="60" h="30"/>
+        <onsuccess>693d2448-6c3d-2901-6b3d-276e6e3d2c27</onsuccess>
+        <target subsheetid="2d8dd32f-2e8d-d4c2-2f8d-d655288dcb50"/>
+      </stage>
+      <stage stageid="693d2448-6c3d-2901-6b3d-276e6e3d2c27" name="Process Stage" type="Process">
+        <subsheetid>d02e0a18-d32e-0ed1-d22e-0d3ed52e11f7</subsheetid>
+        <display x="825" y="120" w="60" h="30"/>
+        <onsuccess>232caec6-222c-ad33-212c-aba0282cb6a5</onsuccess>
+        <target processname="Companion Process" processid="eea6c19b-efa6-c32e-f0a6-c4c1f1a6c654"/>
+      </stage>
+      <stage stageid="232caec6-222c-ad33-212c-aba0282cb6a5" name="Code Stage" type="Code">
+        <subsheetid>d02e0a18-d32e-0ed1-d22e-0d3ed52e11f7</subsheetid>
+        <display x="900" y="120" w="60" h="30"/>
+        <onsuccess>f1ef714c-f4ef-7605-f3ef-7472eeef6c93</onsuccess>
+        <code language="csharp"><![CDATA[return a + b;]]></code>
+        <inputs>
+          <input name="a" type="number" expr="1"/>
+        </inputs>
+        <outputs>
+          <output name="result" type="number" stage="Result"/>
+        </outputs>
+      </stage>
+      <stage stageid="f1ef714c-f4ef-7605-f3ef-7472eeef6c93" name="Navigate Stage" type="Navigate">
+        <subsheetid>d02e0a18-d32e-0ed1-d22e-0d3ed52e11f7</subsheetid>
+        <display x="975" y="120" w="60" h="30"/>
+        <onsuccess>a6afa683-a7af-a816-a8af-a9a9a9afab3c</onsuccess>
+        <step>
+          <element id="530910b3-5409-1246-5509-13d95609156c"/>
+          <action name="ClickCentre"/>
+          <arguments>
+            <argument name="X">10</argument>
+          </arguments>
+        </step>
+      </stage>
+      <stage stageid="a6afa683-a7af-a816-a8af-a9a9a9afab3c" name="Read Stage" type="Read">
+        <subsheetid>d02e0a18-d32e-0ed1-d22e-0d3ed52e11f7</subsheetid>
+        <display x="1050" y="120" w="60" h="30"/>
+        <onsuccess>cbd5a8fe-cad5-a76b-c9d5-a5d8d0d5b0dd</onsuccess>
+        <step>
+          <element id="575e3bf8-5a5e-40b1-595e-3f1e5c5e43d7"/>
+          <action name="Text"/>
+          <storein>Username Value</storein>
+        </step>
+      </stage>
+      <stage stageid="cbd5a8fe-cad5-a76b-c9d5-a5d8d0d5b0dd" name="Write Stage" type="Write">
+        <subsheetid>d02e0a18-d32e-0ed1-d22e-0d3ed52e11f7</subsheetid>
+        <display x="1125" y="120" w="60" h="30"/>
+        <onsuccess>318bc51e-308b-c38b-2f8b-c1f8368bccfd</onsuccess>
+        <step>
+          <element id="575e3bf8-5a5e-40b1-595e-3f1e5c5e43d7"/>
+          <action name="Text"/>
+          <expr>"admin"</expr>
+        </step>
+      </stage>
+      <stage stageid="318bc51e-308b-c38b-2f8b-c1f8368bccfd" name="WaitStart Stage" type="WaitStart">
+        <subsheetid>d02e0a18-d32e-0ed1-d22e-0d3ed52e11f7</subsheetid>
+        <display x="1200" y="120" w="60" h="30"/>
+        <onsuccess>75c31bd3-76c3-1d66-77c3-1ef978c3208c</onsuccess>
+        <timeout>5000</timeout>
+        <step>
+          <element id="530910b3-5409-1246-5509-13d95609156c"/>
+          <condition name="CheckExists"/>
+        </step>
+      </stage>
+      <stage stageid="75c31bd3-76c3-1d66-77c3-1ef978c3208c" name="WaitEnd Stage" type="WaitEnd">
+        <subsheetid>d02e0a18-d32e-0ed1-d22e-0d3ed52e11f7</subsheetid>
+        <display x="1275" y="120" w="60" h="30"/>
+        <onsuccess>201d8cec-231d-91a5-221d-90121d1d8833</onsuccess>
+      </stage>
+      <stage stageid="201d8cec-231d-91a5-221d-90121d1d8833" name="Exception Stage" type="Exception">
+        <narrative>Raised when login fails.</narrative>
+        <subsheetid>d02e0a18-d32e-0ed1-d22e-0d3ed52e11f7</subsheetid>
+        <display x="1350" y="120" w="60" h="30"/>
+        <loginhibit/>
+        <onsuccess>29503bc5-2650-370c-2750-389f245033e6</onsuccess>
+        <exception type="System Exception" detail="&quot;Login failed&quot;" usecurrent="False" savedetail="True"/>
+      </stage>
+      <stage stageid="29503bc5-2650-370c-2750-389f245033e6" name="Recover Stage" type="Recover">
+        <subsheetid>d02e0a18-d32e-0ed1-d22e-0d3ed52e11f7</subsheetid>
+        <display x="1425" y="120" w="60" h="30"/>
+        <onsuccess>282e32e8-2b2e-37a1-2a2e-360e2d2e3ac7</onsuccess>
+      </stage>
+      <stage stageid="282e32e8-2b2e-37a1-2a2e-360e2d2e3ac7" name="Resume Stage" type="Resume">
+        <subsheetid>d02e0a18-d32e-0ed1-d22e-0d3ed52e11f7</subsheetid>
+        <display x="1500" y="120" w="60" h="30"/>
+        <onsuccess>3d632e6f-3e63-3002-3f63-319538632690</onsuccess>
+      </stage>
+      <stage stageid="3d632e6f-3e63-3002-3f63-319538632690" name="Alert Stage" type="Alert">
+        <subsheetid>d02e0a18-d32e-0ed1-d22e-0d3ed52e11f7</subsheetid>
+        <display x="1575" y="120" w="60" h="30"/>
+        <onsuccess>172bcc1b-182b-cdae-192b-cf411a2bd0d4</onsuccess>
+        <alert expression="&quot;Something happened&quot;"/>
+      </stage>
+      <stage stageid="172bcc1b-182b-cdae-192b-cf411a2bd0d4" name="Note Stage" type="Note">
+        <narrative>A free-text annotation.</narrative>
+        <subsheetid>d02e0a18-d32e-0ed1-d22e-0d3ed52e11f7</subsheetid>
+        <display x="1650" y="120" w="60" h="30"/>
+        <onsuccess>463aebe6-453a-ea53-443a-e8c04b3af3c5</onsuccess>
+      </stage>
+      <stage stageid="463aebe6-453a-ea53-443a-e8c04b3af3c5" name="Anchor Stage" type="Anchor">
+        <subsheetid>d02e0a18-d32e-0ed1-d22e-0d3ed52e11f7</subsheetid>
+        <display x="1725" y="120" w="60" h="30"/>
+        <onsuccess>d052059f-d152-0732-d252-08c5cb51fdc0</onsuccess>
+      </stage>
+      <stage stageid="d052059f-d152-0732-d252-08c5cb51fdc0" name="LoopStart Stage" type="LoopStart">
+        <subsheetid>d02e0a18-d32e-0ed1-d22e-0d3ed52e11f7</subsheetid>
+        <display x="1800" y="120" w="60" h="30"/>
+        <onsuccess>8b1659e2-8a16-584f-8916-56bc88165529</onsuccess>
+        <groupinfo/>
+      </stage>
+      <stage stageid="8b1659e2-8a16-584f-8916-56bc88165529" name="LoopEnd Stage" type="LoopEnd">
+        <subsheetid>d02e0a18-d32e-0ed1-d22e-0d3ed52e11f7</subsheetid>
+        <display x="1875" y="120" w="60" h="30"/>
+        <onsuccess>36a20550-39a2-0a09-38a2-08763ba20d2f</onsuccess>
+      </stage>
+      <stage stageid="36a20550-39a2-0a09-38a2-08763ba20d2f" name="Block Stage" type="Block">
+        <subsheetid>d02e0a18-d32e-0ed1-d22e-0d3ed52e11f7</subsheetid>
+        <display x="1950" y="120" w="60" h="30"/>
+        <onsuccess>e4448346-e344-81b3-e244-8020e9448b25</onsuccess>
+      </stage>
+      <stage stageid="e4448346-e344-81b3-e244-8020e9448b25" name="SubSheetInfo Stage" type="SubSheetInfo">
+        <subsheetid>d02e0a18-d32e-0ed1-d22e-0d3ed52e11f7</subsheetid>
+        <display x="2025" y="120" w="60" h="30"/>
+        <onsuccess>1a22e4a0-1d22-e959-1c22-e7c61f22ec7f</onsuccess>
+      </stage>
+      <stage stageid="1a22e4a0-1d22-e959-1c22-e7c61f22ec7f" name="ProcessInfo Stage" type="ProcessInfo">
+        <subsheetid>d02e0a18-d32e-0ed1-d22e-0d3ed52e11f7</subsheetid>
+        <display x="2100" y="120" w="60" h="30"/>
+        <onsuccess>16d99378-19d9-9831-18d9-969e1bd99b57</onsuccess>
+      </stage>
+      <stage stageid="16d99378-19d9-9831-18d9-969e1bd99b57" name="End Stage" type="End">
+        <subsheetid>d02e0a18-d32e-0ed1-d22e-0d3ed52e11f7</subsheetid>
+        <display x="2175" y="120" w="60" h="30"/>
+      </stage>
+      <stage stageid="61c9aa00-64c9-aeb9-63c9-ad2666c9b1df" name="Utility Start" type="Start">
+        <subsheetid>2d8dd32f-2e8d-d4c2-2f8d-d655288dcb50</subsheetid>
+        <display x="20" y="20"/>
+        <onsuccess>0abff5ed-07bf-f134-08bf-f2c705bfee0e</onsuccess>
+      </stage>
+      <stage stageid="0abff5ed-07bf-f134-08bf-f2c705bfee0e" name="Utility End" type="End">
+        <subsheetid>2d8dd32f-2e8d-d4c2-2f8d-d655288dcb50</subsheetid>
+        <display x="100" y="20"/>
+      </stage>
+    </process>
+  </bpr:object>
+  <bpr:object id="aea8529f-afa8-5432-b0a8-55c5a9a84ac0" name="Utility Object" bpversion="7.2.1">
+    <process id="aea8529f-afa8-5432-b0a8-55c5a9a84ac0" name="Utility Object" version="1.0" bpversion="7.2.1" type="object">
+      <subsheet subsheetid="bbddda06-badd-d873-b9dd-d6e0c0dde1e5" type="Normal" published="True">
+        <name>Do Something</name>
+      </subsheet>
+      <stage stageid="be18c81d-bb18-c364-bc18-c4f7b918c03e" name="Start" type="Start">
+        <subsheetid>bbddda06-badd-d873-b9dd-d6e0c0dde1e5</subsheetid>
+        <display x="20" y="20"/>
+        <onsuccess>157b4b70-187b-5029-177b-4e961a7b534f</onsuccess>
+      </stage>
+      <stage stageid="157b4b70-187b-5029-177b-4e961a7b534f" name="End" type="End">
+        <subsheetid>bbddda06-badd-d873-b9dd-d6e0c0dde1e5</subsheetid>
+        <display x="100" y="20"/>
+      </stage>
+    </process>
+  </bpr:object>
+  <bpr:tile id="661b7f29-631b-7a70-641b-7c03691b83e2" name="Throughput Tile"/>
+  <bpr:future-thing>ignored</bpr:future-thing>
+</bpr:release>

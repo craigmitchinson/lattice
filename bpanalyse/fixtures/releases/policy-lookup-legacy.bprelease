@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bpr:release xmlns:bpr="http://www.blueprism.co.uk/product/release">
+  <bpr:name>Policy Lookup Legacy</bpr:name>
+  <bpr:created>2025-11-02T14:30:00Z</bpr:created>
+  <bpr:package-id>f298aa84-f598-af3d-f498-adaaef98a5cb</bpr:package-id>
+  <bpr:package-name>policy-lookup-legacy</bpr:package-name>
+  <bpr:user-created-by>fixture</bpr:user-created-by>
+  <bpr:contents count="2">
+    <bpr:process id="3fb109d8-42b1-0e91-41b1-0cfe44b111b7" name="Legacy Reporter"/>
+    <bpr:object id="52c37278-55c3-7731-54c3-759e57c37a57" name="Policy Lookup"/>
+  </bpr:contents>
+  <bpr:process id="3fb109d8-42b1-0e91-41b1-0cfe44b111b7" name="Legacy Reporter" bpversion="7.2.1">
+    &lt;process id="3fb109d8-42b1-0e91-41b1-0cfe44b111b7" name="Legacy Reporter" version="0.9" bpversion="7.2.1"&gt;
+      &lt;subsheet subsheetid="53afd218-56af-d6d1-55af-d53e58afd9f7" type="MainPage" published="False"&gt;
+        &lt;name&gt;Main Page&lt;/name&gt;
+      &lt;/subsheet&gt;
+      &lt;stage stageid="8efd99a7-8ffd-9b3a-90fd-9ccd89fd91c8" name="Start" type="Start"&gt;
+        &lt;subsheetid&gt;53afd218-56af-d6d1-55af-d53e58afd9f7&lt;/subsheetid&gt;
+        &lt;display x="920" y="320"/&gt;
+        &lt;onsuccess&gt;1e316afc-2131-6fb5-2031-6e221b316643&lt;/onsuccess&gt;
+      &lt;/stage&gt;
+      &lt;stage stageid="1e316afc-2131-6fb5-2031-6e221b316643" name="Account" type="Data"&gt;
+        &lt;subsheetid&gt;53afd218-56af-d6d1-55af-d53e58afd9f7&lt;/subsheetid&gt;
+        &lt;display x="1010" y="380"/&gt;
+        &lt;onsuccess&gt;89693949-8669-3490-8769-36238c693e02&lt;/onsuccess&gt;
+        &lt;datatype&gt;text&lt;/datatype&gt;
+        &lt;initialvalue&gt;12345678&lt;/initialvalue&gt;
+        &lt;exposure&gt;None&lt;/exposure&gt;
+      &lt;/stage&gt;
+      &lt;stage stageid="89693949-8669-3490-8769-36238c693e02" name="Note" type="Note"&gt;
+        &lt;narrative&gt;Kept for reference only.&lt;/narrative&gt;
+        &lt;subsheetid&gt;53afd218-56af-d6d1-55af-d53e58afd9f7&lt;/subsheetid&gt;
+        &lt;display x="20" y="380"/&gt;
+        &lt;onsuccess&gt;ce596e66-cd59-6cd3-cc59-6b40d3597645&lt;/onsuccess&gt;
+      &lt;/stage&gt;
+      &lt;stage stageid="ce596e66-cd59-6cd3-cc59-6b40d3597645" name="End" type="End"&gt;
+        &lt;subsheetid&gt;53afd218-56af-d6d1-55af-d53e58afd9f7&lt;/subsheetid&gt;
+        &lt;display x="110" y="380"/&gt;
+      &lt;/stage&gt;
+    &lt;/process&gt;
+  </bpr:process>
+  <bpr:object id="52c37278-55c3-7731-54c3-759e57c37a57" name="Policy Lookup" bpversion="7.2.1">
+    &lt;process id="52c37278-55c3-7731-54c3-759e57c37a57" name="Policy Lookup" version="1.2" bpversion="7.2.1" type="object"&gt;
+      &lt;subsheet subsheetid="fd674e77-fe67-500a-ff67-519df8674698" type="MainPage" published="False"&gt;
+        &lt;name&gt;Initialise&lt;/name&gt;
+      &lt;/subsheet&gt;
+      &lt;subsheet subsheetid="fbf7865e-faf7-84cb-f9f7-833800f78e3d" type="CleanUp" published="False"&gt;
+        &lt;name&gt;Clean Up&lt;/name&gt;
+      &lt;/subsheet&gt;
+      &lt;subsheet subsheetid="40c57506-3fc5-7373-3ec5-71e045c57ce5" type="Normal" published="True"&gt;
+        &lt;name&gt;Get Policy&lt;/name&gt;
+      &lt;/subsheet&gt;
+      &lt;subsheet subsheetid="ed72e4ba-ec72-e327-eb72-e194ea72e001" type="Normal" published="False"&gt;
+        &lt;name&gt;Unused Helper&lt;/name&gt;
+      &lt;/subsheet&gt;
+      &lt;appdef&gt;
+        &lt;applicationname&gt;Policy Admin&lt;/applicationname&gt;
+        &lt;element id="9ef0fc9a-9df0-fb07-9cf0-f9749bf0f7e1" name="Main Window"&gt;
+          &lt;type&gt;Window&lt;/type&gt;
+          &lt;element id="220de9ba-210d-e827-200d-e6941f0de501" name="Policy Number Field"&gt;
+            &lt;type&gt;Field&lt;/type&gt;
+          &lt;/element&gt;
+          &lt;element id="6eb30581-6bb3-00c8-6cb3-025b71b30a3a" name="Search Button"&gt;
+            &lt;type&gt;Button&lt;/type&gt;
+          &lt;/element&gt;
+          &lt;element id="dcb9c22f-ddb9-c3c2-deb9-c555d7b9ba50" name="Status Label"&gt;
+            &lt;type&gt;Label&lt;/type&gt;
+          &lt;/element&gt;
+        &lt;/element&gt;
+      &lt;/appdef&gt;
+      &lt;stage stageid="d56c8400-d86c-88b9-d76c-8726da6c8bdf" name="Start" type="Start"&gt;
+        &lt;subsheetid&gt;fd674e77-fe67-500a-ff67-519df8674698&lt;/subsheetid&gt;
+        &lt;display x="560" y="260"/&gt;
+        &lt;onsuccess&gt;37ecbfed-34ec-bb34-35ec-bcc732ecb80e&lt;/onsuccess&gt;
+      &lt;/stage&gt;
+      &lt;stage stageid="37ecbfed-34ec-bb34-35ec-bcc732ecb80e" name="End" type="End"&gt;
+        &lt;subsheetid&gt;fd674e77-fe67-500a-ff67-519df8674698&lt;/subsheetid&gt;
+        &lt;display x="650" y="260"/&gt;
+      &lt;/stage&gt;
+      &lt;stage stageid="d2327f75-cf32-7abc-d032-7c4fcd327796" name="Start" type="Start"&gt;
+        &lt;subsheetid&gt;fbf7865e-faf7-84cb-f9f7-833800f78e3d&lt;/subsheetid&gt;
+        &lt;display x="740" y="260"/&gt;
+        &lt;onsuccess&gt;3f4deef8-424d-f3b1-414d-f21e444df6d7&lt;/onsuccess&gt;
+      &lt;/stage&gt;
+      &lt;stage stageid="3f4deef8-424d-f3b1-414d-f21e444df6d7" name="End" type="End"&gt;
+        &lt;subsheetid&gt;fbf7865e-faf7-84cb-f9f7-833800f78e3d&lt;/subsheetid&gt;
+        &lt;display x="830" y="260"/&gt;
+      &lt;/stage&gt;
+      &lt;stage stageid="463d731d-433d-6e64-443d-6ff7413d6b3e" name="Start" type="Start"&gt;
+        &lt;subsheetid&gt;40c57506-3fc5-7373-3ec5-71e045c57ce5&lt;/subsheetid&gt;
+        &lt;display x="920" y="260"/&gt;
+        &lt;onsuccess&gt;3f10177a-3e10-15e7-3d10-14543c1012c1&lt;/onsuccess&gt;
+      &lt;/stage&gt;
+      &lt;stage stageid="3f10177a-3e10-15e7-3d10-14543c1012c1" name="Policy Number" type="Data"&gt;
+        &lt;subsheetid&gt;40c57506-3fc5-7373-3ec5-71e045c57ce5&lt;/subsheetid&gt;
+        &lt;display x="1010" y="320"/&gt;
+        &lt;onsuccess&gt;26d531d1-23d5-2d18-24d5-2eab29d5368a&lt;/onsuccess&gt;
+        &lt;datatype&gt;text&lt;/datatype&gt;
+        &lt;exposure&gt;None&lt;/exposure&gt;
+      &lt;/stage&gt;
+      &lt;stage stageid="26d531d1-23d5-2d18-24d5-2eab29d5368a" name="Status" type="Data"&gt;
+        &lt;subsheetid&gt;40c57506-3fc5-7373-3ec5-71e045c57ce5&lt;/subsheetid&gt;
+        &lt;display x="20" y="320"/&gt;
+        &lt;onsuccess&gt;ec05fd59-e905-f8a0-ea05-fa33ef060212&lt;/onsuccess&gt;
+        &lt;datatype&gt;text&lt;/datatype&gt;
+        &lt;exposure&gt;None&lt;/exposure&gt;
+      &lt;/stage&gt;
+      &lt;stage stageid="ec05fd59-e905-f8a0-ea05-fa33ef060212" name="Write Policy Number" type="Write"&gt;
+        &lt;subsheetid&gt;40c57506-3fc5-7373-3ec5-71e045c57ce5&lt;/subsheetid&gt;
+        &lt;display x="110" y="320"/&gt;
+        &lt;onsuccess&gt;470ea267-480e-a3fa-490e-a58d420e9a88&lt;/onsuccess&gt;
+        &lt;step&gt;
+          &lt;element id="220de9ba-210d-e827-200d-e6941f0de501"/&gt;
+          &lt;action name="Value"/&gt;
+          &lt;expr&gt;[Policy Number]&lt;/expr&gt;
+        &lt;/step&gt;
+      &lt;/stage&gt;
+      &lt;stage stageid="470ea267-480e-a3fa-490e-a58d420e9a88" name="Click Search" type="Navigate"&gt;
+        &lt;subsheetid&gt;40c57506-3fc5-7373-3ec5-71e045c57ce5&lt;/subsheetid&gt;
+        &lt;display x="200" y="320"/&gt;
+        &lt;onsuccess&gt;ac956d97-ad95-6f2a-ae95-70bda79565b8&lt;/onsuccess&gt;
+        &lt;step&gt;
+          &lt;element id="6eb30581-6bb3-00c8-6cb3-025b71b30a3a"/&gt;
+          &lt;action name="ClickCentre"/&gt;
+        &lt;/step&gt;
+      &lt;/stage&gt;
+      &lt;stage stageid="ac956d97-ad95-6f2a-ae95-70bda79565b8" name="Read Status" type="Read"&gt;
+        &lt;subsheetid&gt;40c57506-3fc5-7373-3ec5-71e045c57ce5&lt;/subsheetid&gt;
+        &lt;display x="290" y="320"/&gt;
+        &lt;onsuccess&gt;5377dba3-5477-dd36-5577-dec95677e05c&lt;/onsuccess&gt;
+        &lt;step&gt;
+          &lt;element id="dcb9c22f-ddb9-c3c2-deb9-c555d7b9ba50"/&gt;
+          &lt;action name="Text"/&gt;
+          &lt;storein&gt;Status&lt;/storein&gt;
+        &lt;/step&gt;
+      &lt;/stage&gt;
+      &lt;stage stageid="5377dba3-5477-dd36-5577-dec95677e05c" name="Normalise Status" type="Code"&gt;
+        &lt;subsheetid&gt;40c57506-3fc5-7373-3ec5-71e045c57ce5&lt;/subsheetid&gt;
+        &lt;display x="380" y="320"/&gt;
+        &lt;onsuccess&gt;fab2aefd-f7b2-aa44-f8b2-abd7f5b2a71e&lt;/onsuccess&gt;
+        &lt;code language="visualbasic"&gt;&lt;![CDATA[Dim s As String = Input1
+    Result = s.Trim().ToUpper()]]&gt;&lt;/code&gt;
+        &lt;inputs&gt;
+          &lt;input name="Input1" type="text" expr="[Status]"/&gt;
+        &lt;/inputs&gt;
+        &lt;outputs&gt;
+          &lt;output name="Result" type="text" stage="Status"/&gt;
+        &lt;/outputs&gt;
+      &lt;/stage&gt;
+      &lt;stage stageid="fab2aefd-f7b2-aa44-f8b2-abd7f5b2a71e" name="Recover" type="Recover"&gt;
+        &lt;subsheetid&gt;40c57506-3fc5-7373-3ec5-71e045c57ce5&lt;/subsheetid&gt;
+        &lt;display x="470" y="320"/&gt;
+        &lt;onsuccess&gt;369451e8-3994-56a1-3894-550e3b9459c7&lt;/onsuccess&gt;
+      &lt;/stage&gt;
+      &lt;stage stageid="369451e8-3994-56a1-3894-550e3b9459c7" name="Resume" type="Resume"&gt;
+        &lt;subsheetid&gt;40c57506-3fc5-7373-3ec5-71e045c57ce5&lt;/subsheetid&gt;
+        &lt;display x="560" y="320"/&gt;
+        &lt;onsuccess&gt;d7773e70-da77-4329-d977-4196dc77464f&lt;/onsuccess&gt;
+      &lt;/stage&gt;
+      &lt;stage stageid="d7773e70-da77-4329-d977-4196dc77464f" name="End" type="End"&gt;
+        &lt;subsheetid&gt;40c57506-3fc5-7373-3ec5-71e045c57ce5&lt;/subsheetid&gt;
+        &lt;display x="650" y="320"/&gt;
+      &lt;/stage&gt;
+      &lt;stage stageid="1f7c6451-1c7c-5f98-1d7c-612b227c690a" name="Start" type="Start"&gt;
+        &lt;subsheetid&gt;ed72e4ba-ec72-e327-eb72-e194ea72e001&lt;/subsheetid&gt;
+        &lt;display x="740" y="320"/&gt;
+        &lt;onsuccess&gt;ca1bd9fc-cd1b-deb5-cc1b-dd22c71bd543&lt;/onsuccess&gt;
+      &lt;/stage&gt;
+      &lt;stage stageid="ca1bd9fc-cd1b-deb5-cc1b-dd22c71bd543" name="End" type="End"&gt;
+        &lt;subsheetid&gt;ed72e4ba-ec72-e327-eb72-e194ea72e001&lt;/subsheetid&gt;
+        &lt;display x="830" y="320"/&gt;
+      &lt;/stage&gt;
+    &lt;/process&gt;
+  </bpr:object>
+</bpr:release>
