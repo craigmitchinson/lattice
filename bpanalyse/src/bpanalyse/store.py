@@ -15,16 +15,16 @@ SCHEMA = """
 CREATE TABLE release (id TEXT, name TEXT, created TEXT, exported_by TEXT, source_file TEXT);
 CREATE TABLE process (id TEXT, name TEXT, type TEXT, release_id TEXT, page_count INTEGER, stage_count INTEGER, version TEXT);
 CREATE TABLE page (id TEXT, process_id TEXT, name TEXT, type TEXT, is_main INTEGER, is_published INTEGER, stage_count INTEGER);
-CREATE TABLE stage (id TEXT, page_id TEXT, name TEXT, type TEXT, x INTEGER, y INTEGER);
-CREATE TABLE code_stage (stage_id TEXT, language TEXT, line_count INTEGER, input_count INTEGER, output_count INTEGER, code_hash TEXT);
-CREATE TABLE data_item (stage_id TEXT, datatype TEXT, exposure TEXT, has_initial_value INTEGER, is_masked INTEGER);
-CREATE TABLE calc_stage (stage_id TEXT, expression_length INTEGER, literal_count INTEGER);
+CREATE TABLE stage (id TEXT, process_id TEXT, page_id TEXT, name TEXT, type TEXT, x INTEGER, y INTEGER);
+CREATE TABLE code_stage (stage_id TEXT, process_id TEXT, language TEXT, line_count INTEGER, input_count INTEGER, output_count INTEGER, code_hash TEXT);
+CREATE TABLE data_item (stage_id TEXT, process_id TEXT, datatype TEXT, exposure TEXT, has_initial_value INTEGER, is_masked INTEGER);
+CREATE TABLE calc_stage (stage_id TEXT, process_id TEXT, expression_length INTEGER, literal_count INTEGER);
 CREATE TABLE app_element (id TEXT, object_id TEXT, name TEXT, element_type TEXT, parent_id TEXT, attribute_count INTEGER);
 CREATE TABLE work_queue (name TEXT, key_field TEXT, from_release TEXT);
 CREATE TABLE credential_ref (name TEXT, from_release TEXT);
 CREATE TABLE environment_variable (name TEXT, datatype TEXT, from_release TEXT);
 CREATE TABLE external_object (name TEXT);
-CREATE TABLE edge (from_id TEXT, from_type TEXT, to_id TEXT, to_type TEXT, edge_type TEXT, evidence_stage_id TEXT, unresolved INTEGER, release_id TEXT, detail TEXT);
+CREATE TABLE edge (from_id TEXT, from_process_id TEXT, from_type TEXT, to_id TEXT, to_type TEXT, edge_type TEXT, evidence_stage_id TEXT, evidence_process_id TEXT, unresolved INTEGER, release_id TEXT, detail TEXT);
 CREATE TABLE release_map (process_name TEXT, object_name TEXT, action_name TEXT, call_count INTEGER);
 CREATE TABLE finding (finding_type TEXT, entity_name TEXT, entity_type TEXT, page_name TEXT, stage_name TEXT, detail TEXT);
 """

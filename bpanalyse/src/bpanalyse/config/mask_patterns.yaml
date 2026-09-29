@@ -1,0 +1,18 @@
+# Named regular expressions applied to literal values before parsing.
+# Every match is replaced with [MASKED]. Patterns run in the order listed.
+# Every quantifier is bounded so matching stays linear on hostile input.
+# `requires` (optional) lists literal substrings; the pattern only runs on text containing at least one
+# of them (case-insensitive when the regex is). It is a cheap pre-filter, not a second rule.
+patterns:
+  email:
+    regex: '[A-Za-z0-9._%+-]{1,64}@[A-Za-z0-9.-]{1,255}\.[A-Za-z]{2,24}'
+    requires: ["@"]
+  url_with_host:
+    regex: '(?i)\b[a-z][a-z0-9+.-]{0,31}://[^\s"''/]{1,255}(?:/[^\s"'']{0,2048})?'
+    requires: ["://"]
+  account_number:
+    regex: '\d{8,64}'
+    requires: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+  credential_keyword:
+    regex: '(?i)\b(?:password|passwd|pwd|secret|token|apikey|api[_-]?key)\b\s{0,16}[:=]\s{0,16}[^\s;&"'']{1,1024}'
+    requires: ["password", "passwd", "pwd", "secret", "token", "apikey", "api_key", "api-key"]

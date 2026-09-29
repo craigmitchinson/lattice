@@ -6,6 +6,7 @@ import argparse
 import sqlite3
 import sys
 from collections import Counter
+from importlib import resources
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
@@ -14,9 +15,9 @@ from bpanalyse.findings import compute_findings
 from bpanalyse.graph import build_edges, load_internal_objects, merge
 from bpanalyse.metrics import compute_metrics
 from bpanalyse.model import ParsedFile
-from bpanalyse.sanitise import load_mask_config, sanitise
+from bpanalyse.sanitise import ConfigError, load_mask_config, sanitise
 
-DEFAULT_CONFIG = Path(__file__).resolve().parents[2] / "config"
+DEFAULT_CONFIG = Path(str(resources.files("bpanalyse") / "config"))  # ships inside the package: editable install and wheel alike
 
 
 class _Parser(argparse.ArgumentParser):
@@ -29,21 +30,33 @@ def _read_files(input_dir: Path, config_dir: Path):
     masks = load_mask_config(config_dir / "mask_patterns.yaml")
     parsed: list[ParsedFile] = []
     unknowns: Counter[str] = Counter()
-    failures: list[tuple[str, int]] = []
-    for path in sorted(input_dir.glob("*.bprelease")):
+    failures: list[tuple[str, int, str, str]] = []
+    for path in sorted((p for p in input_dir.iterdir() if p.is_file() and p.name.lower().endswith(".bprelease")), key=lambda p: p.name):
         try:
-            tree, counts = sanitise(parse.load_tree(path), masks)
+            tree, marks = sanitise(parse.load_tree(path), masks)
             unknowns.update(parse.find_unknowns(tree))
-            parsed.append(parse.parse_release(tree, path.name, counts))
+            parsed.append(parse.parse_release(tree, path.name, marks))
+        except parse.ReleaseError as exc:
+            failures.append((path.name, exc.line or parse.line_of(path, exc.ident, exc.name), exc.event, exc.fields))
         except ET.ParseError as exc:
-            failures.append((path.name, exc.position[0]))
+            failures.append((path.name, exc.position[0], "parse_error", ""))
         except (ValueError, OSError):
-            failures.append((path.name, 0))
+            failures.append((path.name, 0, "parse_error", ""))
     return parsed, unknowns, failures
 
 
 def run(input_dir: Path, out_dir: Path, config_dir: Path = DEFAULT_CONFIG, golden: bool = False) -> int:
-    parsed, unknowns, failures = _read_files(input_dir, config_dir)
+    if not config_dir.is_dir():
+        print(f"config_dir_missing dir={config_dir}", file=sys.stderr)
+        return 1
+    if not any(p.is_file() and p.name.lower().endswith(".bprelease") for p in input_dir.iterdir()):
+        print(f"no_input_files dir={input_dir}", file=sys.stderr)
+        return 1
+    try:
+        parsed, unknowns, failures = _read_files(input_dir, config_dir)
+    except ConfigError as exc:
+        print(f"mask_config_error reason={exc}", file=sys.stderr)
+        return 1
     estate, collisions = merge(parsed)
     graph = build_edges(estate, load_internal_objects(config_dir / "internal_objects.yaml"))
     metrics = compute_metrics(estate, graph.edges)
@@ -62,21 +75,30 @@ def run(input_dir: Path, out_dir: Path, config_dir: Path = DEFAULT_CONFIG, golde
             pages=sum(len(p.pages) for p in pf.processes), stages=sum(len(p.stages) for p in pf.processes),
             work_queues=len(pf.queues), credentials=len(pf.credentials), environment_variables=len(pf.env_vars)) for pf in parsed}
         log = outputs.build_log([pf.release.source_file for pf in parsed], per_file, Counter(e.edge_type for e in graph.edges),
-                                unknowns, collisions, estate, failures)
+                                unknowns, collisions, estate, failures, [*estate.notes, *graph.notes])
         outputs.write_all(conn, out_dir, log)
     conn.close()
     return 2 if failures else 0
 
 
+def _tsv(value: object) -> str:
+    return str(value).replace("\\", "\\\\").replace("\t", "\\t").replace("\n", "\\n").replace("\r", "\\r")
+
+
 def run_query_command(kind: str, name: str, db: Path, out: Path | None) -> int:
     if not db.is_file():
+        print(f"no_database path={db}", file=sys.stderr)
         return 1
     conn = sqlite3.connect(str(db))
+    if not query.name_exists(conn, kind, name):
+        conn.close()
+        print(f"not_found name={_tsv(name)}", file=sys.stderr)
+        return 1
     rows = query.run_query(conn, kind, name)
     conn.close()
     print("\t".join(query.DEP_COLUMNS))
     for row in rows:
-        print("\t".join(str(v) for v in row))
+        print("\t".join(_tsv(v) for v in row))
     if out is not None:
         outputs.write_xlsx(out, [(kind, query.DEP_COLUMNS, rows)])
     return 0

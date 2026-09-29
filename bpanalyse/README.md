@@ -16,7 +16,7 @@ The runtime dependencies are openpyxl and pyyaml. To run the tests you also need
 
 This reads every `*.bprelease` file in `./input` and writes `estate.sqlite`, `inventory.xlsx`, `dependencies.xlsx`, `release_map.xlsx`, `metrics.xlsx`, `findings.xlsx`, `graph.json`, `graph.graphml` and `run.log` to `./output`. The exit code is 0 on success, 2 if any input file failed to parse (the other files are still processed and `run.log` names the failing file and line), and 1 on a usage error.
 
-Sensitive literals are masked in memory before parsing, using the patterns in `config/mask_patterns.yaml`. The internal Work Queues and Credentials object names, and the input names used to find the queue or credential, are in `config/internal_objects.yaml`. Use `--config-dir` to point at a different config directory.
+Sensitive literals are masked in memory before parsing, using the patterns in `src/bpanalyse/config/mask_patterns.yaml`. The internal Work Queues and Credentials object names, and the input names used to find the queue or credential, are in `src/bpanalyse/config/internal_objects.yaml`. Use `--config-dir` to point at a different config directory.
 
 ## Query
 

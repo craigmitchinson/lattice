@@ -19,6 +19,9 @@ bpanalyse = "bpanalyse.cli:main"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+bpanalyse = ["config/*.yaml"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]

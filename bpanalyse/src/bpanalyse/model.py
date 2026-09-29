@@ -2,7 +2,18 @@
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass, field
+
+
+def key(process_id: str, item_id: str) -> str:
+    """Composite id: stage, page and element ids are only unique within one process or object."""
+    return f"{process_id}/{item_id}"
+
+
+def q(value: str) -> str:
+    """Quote a name for a one-line log entry."""
+    return json.dumps(value, ensure_ascii=False)
 
 
 @dataclass(frozen=True)
@@ -39,6 +50,7 @@ class Page:
 @dataclass(frozen=True)
 class Stage:
     id: str
+    process_id: str
     page_id: str
     name: str
     type: str
@@ -49,6 +61,7 @@ class Stage:
 @dataclass(frozen=True)
 class CodeStage:
     stage_id: str
+    process_id: str
     language: str
     line_count: int
     input_count: int
@@ -59,6 +72,7 @@ class CodeStage:
 @dataclass(frozen=True)
 class DataItem:
     stage_id: str
+    process_id: str
     datatype: str
     exposure: str
     has_initial_value: int
@@ -68,6 +82,7 @@ class DataItem:
 @dataclass(frozen=True)
 class CalcStage:
     stage_id: str
+    process_id: str
     expression_length: int
     literal_count: int
 
@@ -146,6 +161,7 @@ class ProcessData:
     env_uses: list[TargetRef] = field(default_factory=list)
     masked: list[MaskedItem] = field(default_factory=list)
     masked_total: int = 0
+    notes: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -176,16 +192,19 @@ class Estate:
     credentials: list[CredentialRef] = field(default_factory=list)
     env_vars: list[EnvVar] = field(default_factory=list)
     env_masks: dict[str, tuple[str, int]] = field(default_factory=dict)
+    notes: list[str] = field(default_factory=list)
 
 
 @dataclass(frozen=True)
 class Edge:
     from_id: str
+    from_process_id: str
     from_type: str
     to_id: str
     to_type: str
     edge_type: str
     evidence_stage_id: str
+    evidence_process_id: str
     unresolved: int
     release_id: str
     detail: str = ""

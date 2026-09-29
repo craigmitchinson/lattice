@@ -32,3 +32,70 @@ def out_dir(tmp_path_factory) -> Path:
 @pytest.fixture(scope="session")
 def db(out_dir) -> sqlite3.Connection:
     return sqlite3.connect(out_dir / "estate.sqlite")
+
+
+# ---- helpers for building small synthetic releases -------------------------------------------------------------
+
+import shutil
+import zipfile
+
+from bpanalyse.cli import DEFAULT_CONFIG
+
+NS = "http://www.blueprism.co.uk/product/release"
+MAIN = (("pg-main", "Main Page", "MainPage", "False"),)
+
+
+def stage_xml(sid: str, name: str, kind: str, page: str = "pg-main", inner: str = "") -> str:
+    return f'<stage stageid="{sid}" name="{name}" type="{kind}"><subsheetid>{page}</subsheetid>{inner}</stage>'
+
+
+def process_xml(pid: str | None, name: str, stages: list[str] = (), pages=MAIN, obj: bool = False, appdef: str = "", prefix: str = "") -> str:
+    subs = "".join(f'<subsheet subsheetid="{i}" type="{t}" published="{p}"><name>{n}</name></subsheet>' for i, n, t, p in pages)
+    ident = f' id="{pid}"' if pid else ""
+    kind = ' type="object"' if obj else ""
+    return f'<{prefix}process{ident} name="{name}" version="1"{kind}>{subs}{"".join(stages)}{appdef}</{prefix}process>'
+
+
+def wrapper_xml(pid: str | None, name: str, body: str, obj: bool = False, escape: bool = False) -> str:
+    tag = "bpr:object" if obj else "bpr:process"
+    ident = f' id="{pid}"' if pid else ""
+    if escape:
+        body = body.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+    return f'<{tag}{ident} name="{name}">{body}</{tag}>'
+
+
+def release_xml(*wrappers: str, created: str = "2026-01-01T00:00:00Z", pkg: str = "pkg-1", manifest: str = "", eol: str = "\n") -> str:
+    head = (f'<?xml version="1.0" encoding="utf-8"?>\n<bpr:release xmlns:bpr="{NS}">\n<bpr:name>R</bpr:name>\n'
+            f'<bpr:created>{created}</bpr:created>\n<bpr:package-id>{pkg}</bpr:package-id>\n'
+            f'<bpr:contents count="0">{manifest}</bpr:contents>\n')
+    return (head + "\n".join(wrappers) + "\n</bpr:release>\n").replace("\n", eol)
+
+
+def run_files(tmp_path: Path, files: dict[str, bytes | str], config_dir: Path | None = None) -> tuple[int, Path]:
+    src = tmp_path / "in"
+    src.mkdir(exist_ok=True)
+    for name, content in files.items():
+        (src / name).write_bytes(content.encode("utf-8") if isinstance(content, str) else content)
+    out = tmp_path / "out"
+    args = ["run", str(src), str(out)] + (["--config-dir", str(config_dir)] if config_dir else [])
+    return main(args), out
+
+
+def make_config(tmp_path: Path, mask_yaml: str | None) -> Path:
+    cfg = tmp_path / "cfg"
+    shutil.copytree(DEFAULT_CONFIG, cfg)
+    if mask_yaml is None:
+        (cfg / "mask_patterns.yaml").unlink()
+    else:
+        (cfg / "mask_patterns.yaml").write_text(mask_yaml, encoding="utf-8")
+    return cfg
+
+
+def all_output_bytes(out: Path) -> list[bytes]:
+    blobs = []
+    for path in out.iterdir():
+        blobs.append(path.read_bytes())
+        if path.suffix == ".xlsx":
+            with zipfile.ZipFile(path) as z:
+                blobs += [z.read(n) for n in z.namelist()]
+    return blobs

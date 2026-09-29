@@ -9,7 +9,7 @@ from pathlib import Path
 
 import yaml
 
-from bpanalyse.model import ActionRef, Collision, Edge, Estate, ParsedFile, ProcessData
+from bpanalyse.model import ActionRef, Collision, Edge, Estate, ParsedFile, ProcessData, key, q
 
 EDGE_TYPES = (
     "calls_object", "calls_action", "calls_process", "calls_page", "uses_queue", "uses_credential",
@@ -30,6 +30,7 @@ class GraphResult:
     edges: list[Edge]
     externals: list[str]
     release_map: list[tuple[str, str, str, int]]
+    notes: list[str]
 
 
 def load_internal_objects(path: Path) -> InternalObjects:
@@ -38,12 +39,21 @@ def load_internal_objects(path: Path) -> InternalObjects:
     return InternalObjects(wq["object_name"], tuple(wq["queue_name_inputs"]), cr["object_name"], tuple(cr["credential_name_inputs"]))
 
 
-def created_key(value: str) -> datetime:
+def parse_created(value: str) -> datetime | None:
     try:
         parsed = datetime.fromisoformat(value.strip().replace("Z", "+00:00"))
     except ValueError:
-        return datetime.min.replace(tzinfo=timezone.utc)
+        return None
     return parsed if parsed.tzinfo else parsed.replace(tzinfo=timezone.utc)
+
+
+def created_key(value: str) -> datetime:
+    return parse_created(value) or datetime.min.replace(tzinfo=timezone.utc)
+
+
+def _shown(value: str) -> str:
+    """The created value for the log; an unparsable one is never echoed."""
+    return value if parse_created(value) else "unparsed"
 
 
 def merge(files: list[ParsedFile]) -> tuple[Estate, list[Collision]]:
@@ -53,6 +63,8 @@ def merge(files: list[ParsedFile]) -> tuple[Estate, list[Collision]]:
     estate = Estate()
     for pf in files:
         estate.releases.append(pf.release)
+        if parse_created(pf.release.created) is None:
+            estate.notes.append(f"bad_created file={pf.release.source_file} value_length={len(pf.release.created)}")
         for pd in pf.processes:
             held = chosen.get(pd.process.id)
             if held is None:
@@ -60,8 +72,8 @@ def merge(files: list[ParsedFile]) -> tuple[Estate, list[Collision]]:
                 continue
             newer = created_key(pf.release.created) > created_key(held[0].release.created)
             keep, drop = ((pf, pd), held) if newer else (held, (pf, pd))
-            collisions.append(Collision(pd.process.id, pd.process.name, keep[0].release.source_file, keep[0].release.created,
-                                        drop[0].release.source_file, drop[0].release.created))
+            collisions.append(Collision(pd.process.id, pd.process.name, keep[0].release.source_file, _shown(keep[0].release.created),
+                                        drop[0].release.source_file, _shown(drop[0].release.created)))
             chosen[pd.process.id] = keep
         for group, seen in ((pf.queues, estate.queues), (pf.credentials, estate.credentials), (pf.env_vars, estate.env_vars)):
             for item in group:
@@ -69,6 +81,7 @@ def merge(files: list[ParsedFile]) -> tuple[Estate, list[Collision]]:
                     seen.append(item)
         estate.env_masks.update({k: v for k, v in pf.env_masks.items() if k not in estate.env_masks})
     estate.processes = sorted((pd for _, pd in chosen.values()), key=lambda d: (d.process.name, d.process.id))
+    estate.notes += [n for pd in estate.processes for n in pd.notes]
     return estate, collisions
 
 
@@ -88,21 +101,33 @@ def _lookup_edge(pd: ProcessData, a: ActionRef, names: tuple[str, ...], edge_typ
         return None
     literal = is_literal(expr)
     if literal is not None:
-        return Edge(p.id, p.type, literal, to_type, edge_type, a.stage_id, 0, p.release_id)
-    return Edge(p.id, p.type, "", to_type, edge_type, a.stage_id, 1, p.release_id, str(len(expr)))
+        return Edge(p.id, p.id, p.type, literal, to_type, edge_type, a.stage_id, p.id, 0, p.release_id)
+    return Edge(p.id, p.id, p.type, "", to_type, edge_type, a.stage_id, p.id, 1, p.release_id, str(len(expr)))
 
 
 def build_edges(estate: Estate, cfg: InternalObjects) -> GraphResult:
     procs = {pd.process.id: pd for pd in estate.processes}
-    objects = {}
+    objects: dict[str, ProcessData] = {}
+    notes: list[str] = []
     for pd in estate.processes:
         if pd.process.type == "object":
             objects.setdefault(pd.process.name, pd)
+    for name in sorted({pd.process.name for pd in estate.processes if pd.process.type == "object"}):
+        ids = sorted(pd.process.id for pd in estate.processes if pd.process.type == "object" and pd.process.name == name)
+        if len(ids) > 1:
+            notes.append(f"ambiguous_object name={q(name)} ids={','.join(ids)}")
     by_name = {}
     for pd in estate.processes:
         by_name.setdefault(pd.process.name, pd)
-    actions = {(pd.process.id, pg.name): pg.id for pd in estate.processes for pg in pd.pages if pg.type == "Normal" and pg.is_published}
-    elements = {e.id for pd in estate.processes for e in pd.app_elements}
+    actions: dict[tuple[str, str], str] = {}
+    action_counts: Counter[tuple[str, str]] = Counter()
+    for pd in estate.processes:
+        for pg in pd.pages:
+            if pg.type == "Normal" and pg.is_published:
+                actions.setdefault((pd.process.id, pg.name), pg.id)
+                action_counts[(pd.process.name, pg.name)] += 1
+    notes += [f"ambiguous_action object={q(o)} action={q(a)} count={n}" for (o, a), n in sorted(action_counts.items()) if n > 1]
+    elements = {(pd.process.id, e.id) for pd in estate.processes for e in pd.app_elements}
     env_names = {e.name for e in estate.env_vars}
     internal = {cfg.queue_object, cfg.credential_object}
     edges: list[Edge] = []
@@ -110,6 +135,10 @@ def build_edges(estate: Estate, cfg: InternalObjects) -> GraphResult:
     rmap: Counter[tuple[str, str, str]] = Counter()
     for pd in estate.processes:
         p = pd.process
+
+        def edge(from_id: str, from_type: str, to_id: str, to_type: str, kind: str, stage_id: str, unresolved: int, detail: str = "") -> None:
+            edges.append(Edge(from_id, p.id, from_type, to_id, to_type, kind, stage_id, p.id, unresolved, p.release_id, detail))
+
         page_ids = {pg.id for pg in pd.pages}
         for a in pd.actions:
             if a.object_name == cfg.queue_object:
@@ -121,23 +150,25 @@ def build_edges(estate: Estate, cfg: InternalObjects) -> GraphResult:
                 target = objects.get(a.object_name)
                 if target is None:
                     externals.add(a.object_name)
-                    edges.append(Edge(p.id, p.type, a.object_name, "external_object", "calls_object", a.stage_id, 0, p.release_id))
+                    edge(p.id, p.type, a.object_name, "external_object", "calls_object", a.stage_id, 0)
                     continue
-                edges.append(Edge(p.id, p.type, target.process.id, "object", "calls_object", a.stage_id, 0, p.release_id))
+                edge(p.id, p.type, target.process.id, "object", "calls_object", a.stage_id, 0)
                 page_id = actions.get((target.process.id, a.action_name))
-                edges.append(Edge(p.id, p.type, page_id or "", "page", "calls_action", a.stage_id, int(page_id is None), p.release_id,
-                                  "" if page_id else a.action_name))
+                edge(p.id, p.type, key(target.process.id, page_id) if page_id else "", "page", "calls_action", a.stage_id,
+                     int(page_id is None), "" if page_id else a.action_name)
         for t in pd.process_calls:
             target = procs.get(t.target_id) or (by_name.get(t.target_name) if not t.target_id else None)
-            tid = target.process.id if target else t.target_id
-            edges.append(Edge(p.id, p.type, tid, "process", "calls_process", t.stage_id, int(target is None), p.release_id, "" if target else t.target_name))
+            edge(p.id, p.type, target.process.id if target else t.target_id, "process", "calls_process", t.stage_id,
+                 int(target is None), "" if target else t.target_name)
         for t in pd.page_calls:
-            edges.append(Edge(t.page_id, "page", t.target_id, "page", "calls_page", t.stage_id, int(t.target_id not in page_ids), p.release_id))
+            edge(key(p.id, t.page_id), "page", key(p.id, t.target_id) if t.target_id else "", "page", "calls_page", t.stage_id,
+                 int(t.target_id not in page_ids))
         for t in pd.env_uses:
-            edges.append(Edge(p.id, p.type, t.target_name, "environment_variable", "uses_env_var", t.stage_id, int(t.target_name not in env_names), p.release_id))
+            edge(p.id, p.type, t.target_name, "environment_variable", "uses_env_var", t.stage_id, int(t.target_name not in env_names))
         for t in sorted({(t.stage_id, t.page_id, t.target_id) for t in pd.element_uses}):
-            edges.append(Edge(t[1], "page", t[2], "app_element", "uses_element", t[0], int(t[2] not in elements), p.release_id))
+            edge(key(p.id, t[1]), "page", key(p.id, t[2]), "app_element", "uses_element", t[0], int((p.id, t[2]) not in elements))
         for t in pd.exceptions:
-            edges.append(Edge(t.page_id, "page", t.target_id, "exception_type", "handles_exception", t.stage_id, int(not t.target_id), p.release_id))
+            edge(key(p.id, t.page_id), "page", t.target_id, "exception_type", "handles_exception", t.stage_id, int(not t.target_id))
+    assert all(e.from_id and e.evidence_stage_id for e in edges), "edge without from_id or evidence_stage_id"
     edges.sort(key=lambda e: (e.edge_type, e.from_id, e.to_id, e.evidence_stage_id))
-    return GraphResult(edges, sorted(externals), sorted((*k, v) for k, v in rmap.items()))
+    return GraphResult(edges, sorted(externals), sorted((*k, v) for k, v in rmap.items()), notes)

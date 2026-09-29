@@ -8,7 +8,7 @@ One CLI tool that takes one or more `.bprelease` files and produces an estate in
 
 2.1 Input is a directory of `.bprelease` files exported from Blue Prism 7.2. Multiple files are merged into one estate. The same process or object (matched by its Blue Prism id) appearing in two files is resolved by the later `bpr:created` timestamp in the release header, and the collision is logged.
 
-2.2 A sanitiser step runs first and is mandatory. It masks any Data stage initial value, any calculation literal, any action input literal and any environment variable value that matches configured patterns (credentials, account numbers, URLs with hostnames, email addresses). The mask list is `config/mask_patterns.yaml`, not code. Sanitised copies (in memory) are what the parser reads. Original values are never written to any output.
+2.2 A sanitiser step runs first and is mandatory. It masks any Data stage initial value, any calculation literal, any action input literal and any environment variable value that matches configured patterns (credentials, account numbers, URLs with hostnames, email addresses). The mask list is `src/bpanalyse/config/mask_patterns.yaml`, not code. Sanitised copies (in memory) are what the parser reads. Masking is generic: every attribute value and text node under a stage is masked, and every descendant of `initialvalue`, except identifier fields (stage ids, names and types, page and target ids, resource object and action, input and output names and types, display, datatype, exposure, code language, field names and types, choice names). Exception `type` and `detail` are masked. A missing or empty mask config is a fatal error (exit 1), never an unmasked run. Original values are never written to any output.
 
 2.3 No LLM anywhere in the pipeline. Parsing is deterministic XML traversal only.
 
@@ -39,26 +39,26 @@ One CLI tool that takes one or more `.bprelease` files and produces an estate in
 - `bpr:work-queue id name` with children `keyfield`, `maxattempts`.
 - `bpr:environment-variable name datatype value description` (attributes).
 - `bpr:credential id name` with child `description`.
-- Work queue use is an Action stage on the internal object named `Work Queues` (input named `Queue Name`). Credential use is an Action stage on the internal object `Credentials` (input named `Credentials Name` or `Name`). Both names are configurable in `config/internal_objects.yaml` so they can be corrected against a real export.
+- Work queue use is an Action stage on the internal object named `Work Queues` (input named `Queue Name`). Credential use is an Action stage on the internal object `Credentials` (input named `Credentials Name` or `Name`). Both names are configurable in `src/bpanalyse/config/internal_objects.yaml` so they can be corrected against a real export.
 
 ## 3. Data model (SQLite, one file per run: `estate.sqlite`)
 
-Entities, each with a stable id derived from the release file's own ids, never from position or name.
+Entities, each with a stable id derived from the release file's own ids, never from position or name. Stage, page and element ids are only unique within one process or object (copied objects share them), so stage, page and app_element rows are keyed on (process_id, id); `app_element.object_id` is that process id. In `edge`, page and app_element endpoints are written as `process_id/id`.
 
 - `release`: id (package-id), name, created, exported_by, source_file
 - `process`: id, name, type (process | object), release_id, page_count, stage_count, version
 - `page`: id, process_id, name, type, is_main, is_published, stage_count
-- `stage`: id, page_id, name, type (verbatim), x, y
-- `code_stage`: stage_id, language, line_count, input_count, output_count, code_hash
-- `data_item`: stage_id, datatype, exposure, has_initial_value, is_masked
-- `calc_stage`: stage_id, expression_length, literal_count
+- `stage`: id, process_id, page_id, name, type (verbatim), x, y
+- `code_stage`: stage_id, process_id, language, line_count, input_count, output_count, code_hash
+- `data_item`: stage_id, process_id, datatype, exposure, has_initial_value, is_masked
+- `calc_stage`: stage_id, process_id, expression_length, literal_count
 - `app_element`: id, object_id, name, element_type, parent_id, attribute_count
 - `work_queue`: name, key_field, from_release
 - `credential_ref`: name, from_release
 - `environment_variable`: name, datatype, from_release
 - `external_object`: name (an object referenced but not in the estate)
 
-Relationships: one table `edge` with columns from_id, from_type, to_id, to_type, edge_type, evidence_stage_id, unresolved (0/1), release_id.
+Relationships: one table `edge` with columns from_id, from_type, to_id, to_type, edge_type, evidence_stage_id, unresolved (0/1), release_id. Two further columns, from_process_id and evidence_process_id, name the process or object that owns the from entity and the evidence stage; evidence is looked up on (evidence_process_id, evidence_stage_id).
 
 - `calls_object`: process/object → object (from Action stage `resource object`; to_id is the object id when in the estate, otherwise the external_object row)
 - `calls_action`: process/object → object action page (resolved by object name + action name = published page name)
@@ -78,13 +78,13 @@ Every edge carries an `evidence_stage_id`. An edge with no evidence is a bug, no
 
 4.2 Stage type is taken from the `type` attribute verbatim. No remapping or grouping at parse time.
 
-4.3 Action stage references are matched to objects by name, since that is how Blue Prism links them. Unmatched references are recorded as `external_object` rows, not dropped. The internal objects listed in `config/internal_objects.yaml` are never external.
+4.3 Action stage references are matched to objects by name, since that is how Blue Prism links them. Unmatched references are recorded as `external_object` rows, not dropped. The internal objects listed in `src/bpanalyse/config/internal_objects.yaml` are never external.
 
 4.4 Object action pages: a page is an action if its `type` is `Normal` and `published` is true. Record `is_main` (type MainPage), `type`, and `is_published` separately.
 
-4.5 Code stages: store a SHA-256 of the normalised code body (all whitespace removed) so duplicate code across the estate is detectable. Never store the code itself.
+4.5 Code stages: store a SHA-256 of the normalised code body (all whitespace removed) so duplicate code across the estate is detectable. Never store the code itself. An empty body has an empty `code_hash` and is never a duplicate.
 
-4.6 Calculation stages: store expression length and a count of quoted string literals only.
+4.6 Calculation stages: store expression length and a count of quoted string literals only. Lengths are measured after masking.
 
 4.7 Process id collisions across files: the copy from the release with the later `bpr:created` wins; equal timestamps keep the first file in sorted filename order. Every collision is logged with both file names and both created values.
 
@@ -94,10 +94,10 @@ Computed after parse, stored in a `metrics` table keyed by process or object id.
 
 - `fan_out`: distinct objects called (external included)
 - `fan_in`: distinct processes or objects that call this one
-- `depth`: longest call chain from this process to a leaf object, cycles guarded (a cycle counts its members once)
+- `depth`: longest call chain from this process to a leaf object, computed over strongly connected components so a cycle counts as one step
 - `code_stage_ratio`: code stages ÷ total stages
 - `calc_stage_ratio`: calculation stages (Calculation + MultipleCalculation) ÷ total stages
-- `exception_coverage`: pages with at least one Recover stage ÷ pages with at least one Action stage (0 when no page has an Action stage)
+- `exception_coverage`: among the pages that have at least one Action stage, the pages that also have a Recover stage, divided by the number of pages with an Action stage (0 when no page has an Action stage)
 - `orphan`: fan_in = 0 (1/0). Meaningful for objects; for processes it only says no other process calls it, because schedules are not in a release
 - `dead_pages`: count of pages with no inbound `calls_page` edge, not main, not published, not type CleanUp
 - `duplicate_code_stages`: count of this item's code stages whose code_hash appears in more than one stage across the estate
@@ -119,7 +119,7 @@ Each output is written every run whether or not it has rows. Column names and or
 
 6.5 `findings.xlsx`: one sheet, columns finding_type (orphan | dead_page | duplicate_code | unresolved_ref | external_object | masked_literal | missing_exception_handling), entity_name, entity_type, page_name, stage_name, detail (one identifier only, never a sentence), sorted by finding_type, entity_name, page_name, stage_name. `missing_exception_handling` applies to processes only: a page with an Action stage and no Recover stage.
 
-6.6 `graph.json` (nodes and edges with all attributes, keys sorted, two-space indent, LF line endings) and `graph.graphml` for downstream visualisation.
+6.6 `graph.json` (nodes and edges with all attributes, keys sorted, two-space indent, LF line endings; page and app_element node ids are `process_id/id`) and `graph.graphml` for downstream visualisation.
 
 6.7 `run.log`: file count, per-file entity counts, edge counts, unrecognised elements and attributes with counts, collisions, masked value counts, parse errors with file and line. Contains no data values, only names, counts and paths.
 

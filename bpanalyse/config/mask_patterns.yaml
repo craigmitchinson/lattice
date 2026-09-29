@@ -1,7 +1,0 @@
-# Named regular expressions applied to literal values before parsing.
-# Every match is replaced with [MASKED]. Patterns run in the order listed.
-patterns:
-  email: '[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}'
-  url_with_host: '(?i)\b[a-z][a-z0-9+.-]*://[^\s"''/]+(?:/[^\s"'']*)?'
-  account_number: '\d{8,}'
-  credential_keyword: '(?i)\b(?:password|passwd|pwd|secret|token|apikey|api[_-]?key)\b\s*[:=]\s*[^\s;&"'']+'

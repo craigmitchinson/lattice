@@ -5,6 +5,8 @@ from __future__ import annotations
 import sqlite3
 from dataclasses import dataclass
 
+from bpanalyse.model import key
+
 DEP_COLUMNS = ("from_name", "from_type", "to_name", "to_type", "evidence_page", "evidence_stage", "unresolved")
 
 
@@ -17,20 +19,29 @@ class NamedEdge:
 
 
 def named_edges(conn: sqlite3.Connection) -> list[NamedEdge]:
-    names: dict[str, str] = {}
-    for table in ("process", "page", "app_element"):
-        names.update(conn.execute(f"SELECT id, name FROM {table}"))
-    stages = {i: (n, names.get(p, "")) for i, n, p in conn.execute("SELECT id, name, page_id FROM stage")}
+    names: dict[str, str] = dict(conn.execute("SELECT id, name FROM process"))
+    names.update({key(p, i): n for i, p, n in conn.execute("SELECT id, process_id, name FROM page")})
+    names.update({key(o, i): n for i, o, n in conn.execute("SELECT id, object_id, name FROM app_element")})
+    stages = {(p, i): (n, names.get(key(p, pg), "")) for i, p, n, pg in conn.execute("SELECT id, process_id, name, page_id FROM stage")}
     out = []
-    for e in conn.execute("SELECT edge_type, from_id, from_type, to_id, to_type, evidence_stage_id, unresolved FROM edge"):
-        et, fid, ft, tid, tt, sid, unres = e
-        sname, pname = stages.get(sid, ("", ""))
+    for e in conn.execute("SELECT edge_type, from_id, from_type, to_id, to_type, evidence_stage_id, evidence_process_id, unresolved FROM edge"):
+        et, fid, ft, tid, tt, sid, spid, unres = e
+        sname, pname = stages.get((spid, sid), ("", ""))
         out.append(NamedEdge(et, fid, tid, (names.get(fid, fid), ft, names.get(tid, tid), tt, pname, sname, unres)))
     return sorted(out, key=lambda n: (n.row[0], n.row[2], n.row[5], n.edge_type, n.from_id, n.to_id))
 
 
 def _owners(conn: sqlite3.Connection) -> dict[str, str]:
-    return dict(conn.execute("SELECT id, process_id FROM page")) | {i: i for (i,) in conn.execute("SELECT id FROM process")}
+    return {key(p, i): p for i, p in conn.execute("SELECT id, process_id FROM page")} | {i: i for (i,) in conn.execute("SELECT id FROM process")}
+
+
+def name_exists(conn: sqlite3.Connection, kind: str, name: str) -> bool:
+    """Whether the name is known to a query of this kind (used to tell an empty result from an unknown name)."""
+    if kind in ("impact", "depends"):
+        return bool(_ids_named(conn, name))
+    table, edge_type = ("work_queue", "uses_queue") if kind == "queue" else ("credential_ref", "uses_credential")
+    return bool(conn.execute(f"SELECT 1 FROM {table} WHERE name = ? UNION SELECT 1 FROM edge WHERE edge_type = ? AND to_id = ?",
+                             (name, edge_type, name)).fetchone())
 
 
 def _ids_named(conn: sqlite3.Connection, name: str) -> set[str]:

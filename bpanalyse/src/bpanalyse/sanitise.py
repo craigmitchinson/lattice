@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import copy
 import re
-from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 from xml.etree import ElementTree as ET
@@ -12,16 +11,43 @@ from xml.etree import ElementTree as ET
 import yaml
 
 MASK = "[MASKED]"
+Marks = dict[int, tuple[str, int]]  # id(element) -> ("pattern+pattern", masked value count); side table, never XML attributes
+
+# Identifier names left unmasked inside a stage (element name -> attributes). "*" means every attribute.
+_KEEP_ATTRS = {
+    "stage": {"stageid", "name", "type"}, "element": {"id"}, "target": {"subsheetid", "processid", "processname"},
+    "resource": {"object", "action"}, "input": {"name", "type"}, "output": {"name", "type", "stage"}, "display": {"*"},
+    "code": {"language"}, "field": {"name", "type"}, "choice": {"name", "ontrue"},
+}
+_KEEP_TEXT = frozenset({"subsheetid", "onsuccess", "ontrue", "onfalse", "datatype", "exposure"})
+
+
+class ConfigError(Exception):
+    """The mask configuration is missing or unusable; masking must never fail open."""
 
 
 @dataclass(frozen=True)
 class MaskConfig:
-    patterns: tuple[tuple[str, re.Pattern[str]], ...]
+    patterns: tuple[tuple[str, re.Pattern[str], tuple[str, ...]], ...]  # name, regex, pre-filter literals
 
 
 def load_mask_config(path: Path) -> MaskConfig:
-    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-    return MaskConfig(tuple((n, re.compile(p)) for n, p in (data.get("patterns") or {}).items()))
+    if not path.is_file():
+        raise ConfigError(f"mask config missing: {path}")
+    data = yaml.safe_load(path.read_text(encoding="utf-8"))
+    patterns = data.get("patterns") if isinstance(data, dict) else None
+    if not isinstance(patterns, dict) or not patterns:
+        raise ConfigError(f"mask config has no patterns: {path}")
+    out = []
+    for name, spec in patterns.items():
+        spec = {"regex": spec} if isinstance(spec, str) else spec
+        try:
+            rx = re.compile(spec["regex"])
+        except (TypeError, KeyError, re.error) as exc:
+            raise ConfigError(f"mask pattern {name} invalid: {exc!r}") from exc
+        need = tuple(str(r).lower() if rx.flags & re.I else str(r) for r in spec.get("requires") or ())
+        out.append((str(name), rx, need))
+    return MaskConfig(tuple(out))
 
 
 def local(tag: str) -> str:
@@ -31,10 +57,14 @@ def local(tag: str) -> str:
 def mask_text(text: str, cfg: MaskConfig) -> tuple[str, dict[str, int]]:
     """Return the text with every pattern match replaced, and hit counts per pattern name."""
     hits: dict[str, int] = {}
-    for name, pattern in cfg.patterns:
+    low = text.lower() if text else text
+    for name, pattern, need in cfg.patterns:
+        if need and not any(r in (low if pattern.flags & re.I else text) for r in need):
+            continue
         text, n = pattern.subn(MASK, text)
         if n:
             hits[name] = n
+            low = text.lower()
     return text, hits
 
 
@@ -43,49 +73,42 @@ def _merge(total: dict[str, int], hits: dict[str, int]) -> None:
         total[k] = total.get(k, 0) + v
 
 
-def _annotate(el: ET.Element, total: dict[str, int]) -> int:
-    n = sum(total.values())
-    if n:
-        el.set("_masked", "+".join(sorted(total)))
-        el.set("_maskn", str(n))
-    return n
-
-
-def _mask_stage(stage: ET.Element, cfg: MaskConfig) -> int:
+def _mask_stage(stage: ET.Element, cfg: MaskConfig) -> tuple[str, int]:
+    """Mask every attribute value and text node under the stage except identifiers; initialvalue is masked whole."""
     total: dict[str, int] = {}
+    initial = {id(x) for iv in stage.iter() if local(iv.tag) == "initialvalue" for x in iv.iter()}
     for el in stage.iter():
-        name = local(el.tag)
-        if name in ("initialvalue", "argument") or (name == "expr" and el is not stage):
-            if el.text:
-                el.text, hits = mask_text(el.text, cfg)
-                _merge(total, hits)
-        if name in ("calculation", "decision") and "expression" in el.attrib:
-            masked, hits = mask_text(el.get("expression", ""), cfg)
-            el.set("expression", masked)
-            _merge(total, hits)
-        if name == "input" and "expr" in el.attrib:
-            masked, hits = mask_text(el.get("expr", ""), cfg)
-            el.set("expr", masked)
-            _merge(total, hits)
-    return _annotate(stage, total)
+        name, whole = local(el.tag), id(el) in initial
+        keep = _KEEP_ATTRS.get(name, ())
+        for key in list(el.attrib):
+            if whole or not (key in keep or "*" in keep):
+                el.set(key, _hit(el.get(key, ""), cfg, total))
+        if el.text and (whole or name not in _KEEP_TEXT):
+            el.text = _hit(el.text, cfg, total)
+        if el.tail and el is not stage:
+            el.tail = _hit(el.tail, cfg, total)
+    return "+".join(sorted(total)), sum(total.values())
 
 
-def sanitise(root: ET.Element, cfg: MaskConfig) -> tuple[ET.Element, Counter[str]]:
-    """Return a masked deep copy and a count of masked values per process/object id (or env:<name>)."""
+def _hit(value: str, cfg: MaskConfig, total: dict[str, int]) -> str:
+    masked, hits = mask_text(value, cfg)
+    _merge(total, hits)
+    return masked
+
+
+def sanitise(root: ET.Element, cfg: MaskConfig) -> tuple[ET.Element, Marks]:
+    """Return a masked deep copy and a side table of masked-value counts keyed by id() of stage / environment-variable elements."""
     tree = copy.deepcopy(root)
-    counts: Counter[str] = Counter()
-    top = {id(c) for c in tree}
+    marks: Marks = {}
     for el in tree.iter():
         name = local(el.tag)
         if name == "environment-variable" and "value" in el.attrib:
-            masked, hits = mask_text(el.get("value", ""), cfg)
-            el.set("value", masked)
-            n = _annotate(el, hits)
-            if n and id(el) in top:
-                counts["env:" + el.get("name", "")] += n
-    for wrapper in tree:
-        if local(wrapper.tag) in ("process", "object"):
-            for stage in wrapper.iter():
-                if local(stage.tag) == "stage":
-                    counts[wrapper.get("id", "")] += _mask_stage(stage, cfg)
-    return tree, +counts
+            total: dict[str, int] = {}
+            el.set("value", _hit(el.get("value", ""), cfg, total))
+            if total:
+                marks[id(el)] = ("+".join(sorted(total)), sum(total.values()))
+        elif name == "stage":
+            hit = _mask_stage(el, cfg)
+            if hit[1]:
+                marks[id(el)] = hit
+    return tree, marks
