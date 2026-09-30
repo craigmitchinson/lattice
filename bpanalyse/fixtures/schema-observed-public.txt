@@ -1,0 +1,1300 @@
+# STAGE TYPES
+Data 638
+Block 216
+End 177
+Start 174
+SubSheetInfo 155
+Code 123
+Action 91
+Decision 89
+SubSheet 76
+Anchor 64
+Exception 54
+Collection 40
+Calculation 39
+Note 22
+ProcessInfo 19
+Recover 14
+Resume 14
+LoopStart 8
+LoopEnd 8
+Navigate 4
+MultipleCalculation 4
+WaitEnd 3
+WaitStart 3
+Write 1
+Read 1
+ChoiceStart 1
+ChoiceEnd 1
+# STAGE CHILDREN/ATTRS PER TYPE
+Start attrs {'stageid': 174, 'name': 174, 'type': 174} children {'loginhibit': 159, 'narrative': 31, 'displayx': 31, 'displayy': 31, 'displaywidth': 31, 'displayheight': 31, 'font': 155, 'onsuccess': 172, 'subsheetid': 155, 'inputs': 130, 'display': 143, 'preconditions': 10, 'postconditions': 1}
+End attrs {'stageid': 177, 'name': 177, 'type': 177} children {'loginhibit': 162, 'narrative': 31, 'displayx': 31, 'displayy': 31, 'displaywidth': 31, 'displayheight': 31, 'font': 110, 'subsheetid': 158, 'display': 146, 'outputs': 52}
+ProcessInfo attrs {'stageid': 19, 'name': 19, 'type': 19} children {'narrative': 12, 'displayx': 12, 'displayy': 12, 'displaywidth': 12, 'displayheight': 12, 'font': 13, 'references': 8, 'imports': 8, 'language': 8, 'globalcode': 8, 'code': 8, 'display': 7, 'loginhibit': 1}
+SubSheetInfo attrs {'stageid': 155, 'name': 155, 'type': 155} children {'subsheetid': 155, 'narrative': 134, 'displayx': 19, 'displayy': 19, 'displaywidth': 19, 'displayheight': 19, 'font': 91, 'display': 136, 'loginhibit': 6}
+Note attrs {'stageid': 22, 'name': 22, 'type': 22} children {'subsheetid': 15, 'narrative': 22, 'displayx': 11, 'displayy': 11, 'displaywidth': 11, 'displayheight': 11, 'font': 17, 'display': 11, 'loginhibit': 12, 'onsuccess': 5}
+Code attrs {'stageid': 123, 'name': 123, 'type': 123} children {'subsheetid': 123, 'loginhibit': 122, 'narrative': 6, 'displayx': 3, 'displayy': 3, 'displaywidth': 3, 'displayheight': 3, 'font': 114, 'onsuccess': 123, 'code': 123, 'display': 120, 'inputs': 119, 'outputs': 58}
+Action attrs {'stageid': 91, 'name': 91, 'type': 91} children {'narrative': 65, 'displayx': 65, 'displayy': 65, 'displaywidth': 65, 'displayheight': 65, 'font': 65, 'inputs': 81, 'outputs': 51, 'onsuccess': 87, 'resource': 91, 'subsheetid': 48, 'loginhibit': 37, 'display': 26, 'loginhibitparameters': 6}
+Decision attrs {'stageid': 89, 'name': 89, 'type': 89} children {'narrative': 34, 'displayx': 32, 'displayy': 32, 'displaywidth': 32, 'displayheight': 32, 'font': 71, 'decision': 89, 'ontrue': 87, 'onfalse': 87, 'subsheetid': 82, 'loginhibit': 77, 'display': 57}
+Calculation attrs {'stageid': 39, 'name': 39, 'type': 39} children {'narrative': 21, 'displayx': 21, 'displayy': 21, 'displaywidth': 21, 'displayheight': 21, 'font': 33, 'onsuccess': 38, 'calculation': 39, 'subsheetid': 33, 'loginhibit': 30, 'display': 18}
+Anchor attrs {'stageid': 64, 'name': 64, 'type': 64} children {'narrative': 32, 'displayx': 32, 'displayy': 32, 'displaywidth': 32, 'displayheight': 32, 'font': 43, 'onsuccess': 64, 'subsheetid': 56, 'loginhibit': 53, 'display': 32}
+Recover attrs {'stageid': 14, 'name': 14, 'type': 14} children {'narrative': 4, 'displayx': 4, 'displayy': 4, 'displaywidth': 4, 'displayheight': 4, 'font': 8, 'onsuccess': 14, 'subsheetid': 11, 'loginhibit': 10, 'display': 10}
+Resume attrs {'stageid': 14, 'name': 14, 'type': 14} children {'narrative': 4, 'displayx': 4, 'displayy': 4, 'displaywidth': 4, 'displayheight': 4, 'font': 8, 'onsuccess': 14, 'subsheetid': 11, 'loginhibit': 10, 'display': 10}
+Collection attrs {'stageid': 40, 'name': 40, 'type': 40} children {'narrative': 28, 'displayx': 28, 'displayy': 28, 'displaywidth': 28, 'displayheight': 28, 'font': 35, 'datatype': 40, 'private': 36, 'alwaysinit': 40, 'collectioninfo': 21, 'initialvalue': 4, 'subsheetid': 22, 'display': 12, 'loginhibit': 9}
+Data attrs {'stageid': 638, 'name': 638, 'type': 638} children {'narrative': 81, 'displayx': 76, 'displayy': 76, 'displaywidth': 76, 'displayheight': 76, 'font': 483, 'datatype': 638, 'initialvalue': 628, 'private': 623, 'alwaysinit': 638, 'initialvalueenc': 10, 'subsheetid': 583, 'loginhibit': 65, 'display': 562, 'exposure': 4}
+SubSheet attrs {'stageid': 76, 'name': 76, 'type': 76} children {'narrative': 7, 'displayx': 7, 'displayy': 7, 'displaywidth': 7, 'displayheight': 7, 'font': 73, 'onsuccess': 76, 'processid': 76, 'subsheetid': 73, 'loginhibit': 73, 'display': 69, 'outputs': 19, 'inputs': 67}
+Navigate attrs {'stageid': 4, 'name': 4, 'type': 4} children {'subsheetid': 4, 'loginhibit': 4, 'narrative': 4, 'displayx': 4, 'displayy': 4, 'displaywidth': 4, 'displayheight': 4, 'font': 4, 'onsuccess': 4, 'step': 4}
+WaitEnd attrs {'stageid': 3, 'name': 3, 'type': 3} children {'subsheetid': 3, 'loginhibit': 3, 'narrative': 2, 'displayx': 2, 'displayy': 2, 'displaywidth': 2, 'displayheight': 2, 'font': 2, 'onsuccess': 3, 'groupid': 3, 'display': 1}
+WaitStart attrs {'stageid': 3, 'name': 3, 'type': 3} children {'subsheetid': 3, 'loginhibit': 3, 'narrative': 2, 'displayx': 2, 'displayy': 2, 'displaywidth': 2, 'displayheight': 2, 'font': 2, 'onsuccess': 1, 'groupid': 3, 'choices': 3, 'timeout': 3, 'display': 1}
+Exception attrs {'stageid': 54, 'name': 54, 'type': 54} children {'subsheetid': 53, 'narrative': 14, 'displayx': 13, 'displayy': 13, 'displaywidth': 13, 'displayheight': 13, 'font': 44, 'exception': 54, 'display': 41, 'loginhibit': 7}
+Write attrs {'stageid': 1, 'name': 1, 'type': 1} children {'subsheetid': 1, 'loginhibit': 1, 'narrative': 1, 'displayx': 1, 'displayy': 1, 'displaywidth': 1, 'displayheight': 1, 'font': 1, 'onsuccess': 1, 'step': 2}
+Read attrs {'stageid': 1, 'name': 1, 'type': 1} children {'subsheetid': 1, 'loginhibit': 1, 'narrative': 1, 'displayx': 1, 'displayy': 1, 'displaywidth': 1, 'displayheight': 1, 'font': 1, 'onsuccess': 1, 'step': 1}
+Block attrs {'stageid': 216, 'name': 216, 'type': 216} children {'subsheetid': 209, 'loginhibit': 208, 'display': 191, 'font': 216, 'narrative': 25, 'displayx': 25, 'displayy': 25, 'displaywidth': 25, 'displayheight': 25}
+LoopStart attrs {'stageid': 8, 'name': 8, 'type': 8} children {'subsheetid': 8, 'loginhibit': 7, 'narrative': 7, 'displayx': 7, 'displayy': 7, 'displaywidth': 7, 'displayheight': 7, 'font': 8, 'onsuccess': 7, 'groupid': 8, 'looptype': 8, 'loopdata': 8, 'display': 1}
+LoopEnd attrs {'stageid': 8, 'name': 8, 'type': 8} children {'subsheetid': 8, 'loginhibit': 7, 'narrative': 7, 'displayx': 7, 'displayy': 7, 'displaywidth': 7, 'displayheight': 7, 'font': 8, 'onsuccess': 7, 'groupid': 8, 'display': 1}
+MultipleCalculation attrs {'stageid': 4, 'name': 4, 'type': 4} children {'subsheetid': 4, 'loginhibit': 4, 'narrative': 4, 'displayx': 4, 'displayy': 4, 'displaywidth': 4, 'displayheight': 4, 'font': 4, 'onsuccess': 4, 'steps': 4}
+ChoiceStart attrs {'stageid': 1, 'name': 1, 'type': 1} children {'subsheetid': 1, 'loginhibit': 1, 'narrative': 1, 'displayx': 1, 'displayy': 1, 'displaywidth': 1, 'displayheight': 1, 'font': 1, 'groupid': 1, 'choices': 1}
+ChoiceEnd attrs {'stageid': 1, 'name': 1, 'type': 1} children {'subsheetid': 1, 'loginhibit': 1, 'narrative': 1, 'displayx': 1, 'displayy': 1, 'displaywidth': 1, 'displayheight': 1, 'font': 1, 'onsuccess': 1, 'groupid': 1}
+# NON-STAGE PATHS
+8 /release
+8 /release/contents
+1 /release/contents/credential
+1 /release/contents/credential/credentialType
+1 /release/contents/credential/members
+1 /release/contents/credential/members/object
+1 /release/contents/credential/members/process
+4 /release/contents/environment-variable
+4 /release/contents/environment-variable/description
+8 /release/contents/object
+6 /release/contents/object-group
+6 /release/contents/object-group/members
+6 /release/contents/object-group/members/object
+8 /release/contents/object/process
+8 /release/contents/object/process/appdef
+1 /release/contents/object/process/appdef/apptypeinfo
+1 /release/contents/object/process/appdef/apptypeinfo/id
+1 /release/contents/object/process/appdef/apptypeinfo/parameters
+5 /release/contents/object/process/appdef/apptypeinfo/parameters/parameter
+5 /release/contents/object/process/appdef/apptypeinfo/parameters/parameter/name
+5 /release/contents/object/process/appdef/apptypeinfo/parameters/parameter/value
+8 /release/contents/object/process/appdef/element
+8 /release/contents/object/process/appdef/element/basetype
+8 /release/contents/object/process/appdef/element/datatype
+8 /release/contents/object/process/appdef/element/diagnose
+1 /release/contents/object/process/appdef/element/element
+1 /release/contents/object/process/appdef/element/element/attributes
+19 /release/contents/object/process/appdef/element/element/attributes/attribute
+19 /release/contents/object/process/appdef/element/element/attributes/attribute/ProcessValue
+1 /release/contents/object/process/appdef/element/element/basetype
+1 /release/contents/object/process/appdef/element/element/datatype
+1 /release/contents/object/process/appdef/element/element/diagnose
+4 /release/contents/object/process/appdef/element/element/element
+4 /release/contents/object/process/appdef/element/element/element/attributes
+115 /release/contents/object/process/appdef/element/element/element/attributes/attribute
+115 /release/contents/object/process/appdef/element/element/element/attributes/attribute/ProcessValue
+4 /release/contents/object/process/appdef/element/element/element/basetype
+4 /release/contents/object/process/appdef/element/element/element/datatype
+4 /release/contents/object/process/appdef/element/element/element/diagnose
+4 /release/contents/object/process/appdef/element/element/element/id
+4 /release/contents/object/process/appdef/element/element/element/type
+1 /release/contents/object/process/appdef/element/element/id
+1 /release/contents/object/process/appdef/element/element/type
+8 /release/contents/object/process/appdef/element/id
+8 /release/contents/object/process/appdef/element/type
+8 /release/contents/object/process/endpoint
+8 /release/contents/object/process/preconditions
+2 /release/contents/object/process/preconditions/condition
+151 /release/contents/object/process/subsheet
+151 /release/contents/object/process/subsheet/name
+151 /release/contents/object/process/subsheet/view
+151 /release/contents/object/process/subsheet/view/camerax
+151 /release/contents/object/process/subsheet/view/cameray
+151 /release/contents/object/process/subsheet/view/zoom
+8 /release/contents/object/process/view
+8 /release/contents/object/process/view/camerax
+8 /release/contents/object/process/view/cameray
+8 /release/contents/object/process/view/zoom
+11 /release/contents/process
+3 /release/contents/process-group
+3 /release/contents/process-group/members
+4 /release/contents/process-group/members/process
+11 /release/contents/process/process
+11 /release/contents/process/process/endpoint
+11 /release/contents/process/process/preconditions
+4 /release/contents/process/process/subsheet
+4 /release/contents/process/process/subsheet/name
+4 /release/contents/process/process/subsheet/view
+4 /release/contents/process/process/subsheet/view/camerax
+4 /release/contents/process/process/subsheet/view/cameray
+4 /release/contents/process/process/subsheet/view/zoom
+11 /release/contents/process/process/view
+11 /release/contents/process/process/view/camerax
+11 /release/contents/process/process/view/cameray
+11 /release/contents/process/process/view/zoom
+1 /release/contents/webapiservice
+1 /release/contents/webapiservice/configuration
+1 /release/contents/webapiservice/configuration/actions
+3 /release/contents/webapiservice/configuration/actions/action
+3 /release/contents/webapiservice/configuration/actions/action/description
+3 /release/contents/webapiservice/configuration/actions/action/outputparameters
+3 /release/contents/webapiservice/configuration/actions/action/outputparameters/code
+3 /release/contents/webapiservice/configuration/actions/action/outputparameters/parameters
+3 /release/contents/webapiservice/configuration/actions/action/outputparameters/parameters/customoutputparameter
+3 /release/contents/webapiservice/configuration/actions/action/parameters
+4 /release/contents/webapiservice/configuration/actions/action/parameters/actionparameter
+4 /release/contents/webapiservice/configuration/actions/action/parameters/actionparameter/description
+4 /release/contents/webapiservice/configuration/actions/action/parameters/actionparameter/initialvalue
+3 /release/contents/webapiservice/configuration/actions/action/request
+3 /release/contents/webapiservice/configuration/actions/action/request/bodycontent
+3 /release/contents/webapiservice/configuration/actions/action/request/headers
+1 /release/contents/webapiservice/configuration/commonauthentications
+1 /release/contents/webapiservice/configuration/commonauthentications/authentication
+1 /release/contents/webapiservice/configuration/commoncode
+1 /release/contents/webapiservice/configuration/commoncode/codeproperties
+1 /release/contents/webapiservice/configuration/commoncode/codeproperties/namespaces
+3 /release/contents/webapiservice/configuration/commoncode/codeproperties/namespaces/namespace
+1 /release/contents/webapiservice/configuration/commoncode/codeproperties/references
+4 /release/contents/webapiservice/configuration/commoncode/codeproperties/references/reference
+1 /release/contents/webapiservice/configuration/commonheaders
+1 /release/contents/webapiservice/configuration/commonparameters
+1 /release/contents/webapiservice/configuration/configurationsettings
+1 /release/contents/webapiservice/configuration/configurationsettings/configurationsettings
+8 /release/created
+8 /release/name
+8 /release/package-id
+8 /release/package-name
+8 /release/release-notes
+8 /release/user-created-by
+# ATTRS OUTSIDE STAGE
+1 /release/contents/credential/members/object@id
+1 /release/contents/credential/members/process@id
+1 /release/contents/credential@id
+1 /release/contents/credential@name
+4 /release/contents/environment-variable@id
+4 /release/contents/environment-variable@name
+4 /release/contents/environment-variable@type
+4 /release/contents/environment-variable@value
+6 /release/contents/object-group/members/object@id
+6 /release/contents/object-group@id
+5 /release/contents/object-group@isDefaultGroup
+6 /release/contents/object-group@name
+19 /release/contents/object/process/appdef/element/element/attributes/attribute/ProcessValue@datatype
+19 /release/contents/object/process/appdef/element/element/attributes/attribute/ProcessValue@value
+5 /release/contents/object/process/appdef/element/element/attributes/attribute@inuse
+19 /release/contents/object/process/appdef/element/element/attributes/attribute@name
+115 /release/contents/object/process/appdef/element/element/element/attributes/attribute/ProcessValue@datatype
+115 /release/contents/object/process/appdef/element/element/element/attributes/attribute/ProcessValue@value
+20 /release/contents/object/process/appdef/element/element/element/attributes/attribute@inuse
+115 /release/contents/object/process/appdef/element/element/element/attributes/attribute@name
+4 /release/contents/object/process/appdef/element/element/element@name
+1 /release/contents/object/process/appdef/element/element@name
+8 /release/contents/object/process/appdef/element@name
+8 /release/contents/object/process/endpoint@narrative
+2 /release/contents/object/process/preconditions/condition@narrative
+146 /release/contents/object/process/subsheet/view/zoom@version
+151 /release/contents/object/process/subsheet@published
+151 /release/contents/object/process/subsheet@subsheetid
+151 /release/contents/object/process/subsheet@type
+7 /release/contents/object/process/view/zoom@version
+7 /release/contents/object/process@bpversion
+6 /release/contents/object/process@byrefcollection
+8 /release/contents/object/process@name
+8 /release/contents/object/process@narrative
+8 /release/contents/object/process@runmode
+8 /release/contents/object/process@type
+8 /release/contents/object/process@version
+8 /release/contents/object@id
+8 /release/contents/object@name
+4 /release/contents/process-group/members/process@id
+3 /release/contents/process-group@id
+3 /release/contents/process-group@isDefaultGroup
+3 /release/contents/process-group@name
+11 /release/contents/process/process/endpoint@narrative
+2 /release/contents/process/process/subsheet/view/zoom@version
+4 /release/contents/process/process/subsheet@published
+4 /release/contents/process/process/subsheet@subsheetid
+4 /release/contents/process/process/subsheet@type
+4 /release/contents/process/process/view/zoom@version
+4 /release/contents/process/process@bpversion
+4 /release/contents/process/process@byrefcollection
+11 /release/contents/process/process@name
+11 /release/contents/process/process@narrative
+11 /release/contents/process/process@version
+11 /release/contents/process@id
+11 /release/contents/process@name
+1 /release/contents/process@published
+3 /release/contents/webapiservice/configuration/actions/action/outputparameters/parameters/customoutputparameter@datatype
+3 /release/contents/webapiservice/configuration/actions/action/outputparameters/parameters/customoutputparameter@name
+3 /release/contents/webapiservice/configuration/actions/action/outputparameters/parameters/customoutputparameter@path
+3 /release/contents/webapiservice/configuration/actions/action/outputparameters/parameters/customoutputparameter@type
+4 /release/contents/webapiservice/configuration/actions/action/parameters/actionparameter@datatype
+4 /release/contents/webapiservice/configuration/actions/action/parameters/actionparameter@expose
+4 /release/contents/webapiservice/configuration/actions/action/parameters/actionparameter@name
+2 /release/contents/webapiservice/configuration/actions/action/request/bodycontent@fileinputparametername
+3 /release/contents/webapiservice/configuration/actions/action/request/bodycontent@type
+3 /release/contents/webapiservice/configuration/actions/action/request@httpmethod
+3 /release/contents/webapiservice/configuration/actions/action/request@urlpath
+3 /release/contents/webapiservice/configuration/actions/action@disableSendingOfRequest
+3 /release/contents/webapiservice/configuration/actions/action@enableRequestOutputParameter
+3 /release/contents/webapiservice/configuration/actions/action@enabled
+3 /release/contents/webapiservice/configuration/actions/action@id
+3 /release/contents/webapiservice/configuration/actions/action@name
+1 /release/contents/webapiservice/configuration/commonauthentications/authentication@type
+1 /release/contents/webapiservice/configuration/commoncode/codeproperties@code
+1 /release/contents/webapiservice/configuration/commoncode/codeproperties@language
+1 /release/contents/webapiservice/configuration/configurationsettings/configurationsettings@authserverrequesttimeout
+1 /release/contents/webapiservice/configuration/configurationsettings/configurationsettings@requesttimeout
+1 /release/contents/webapiservice/configuration@baseurl
+1 /release/contents/webapiservice@enabled
+1 /release/contents/webapiservice@id
+1 /release/contents/webapiservice@name
+8 /release/contents@count
+# STAGE-SUBTREE PATHS
+26 Action]
+15 Action]/display
+11 Action]/displayheight
+11 Action]/displaywidth
+11 Action]/displayx
+11 Action]/displayy
+11 Action]/font
+24 Action]/inputs
+31 Action]/inputs/input
+26 Action]/loginhibit
+11 Action]/narrative
+26 Action]/onsuccess
+16 Action]/outputs
+29 Action]/outputs/output
+26 Action]/resource
+26 Action]/subsheetid
+53 Anchor]
+32 Anchor]/display
+21 Anchor]/displayheight
+21 Anchor]/displaywidth
+21 Anchor]/displayx
+21 Anchor]/displayy
+32 Anchor]/font
+53 Anchor]/loginhibit
+21 Anchor]/narrative
+53 Anchor]/onsuccess
+53 Anchor]/subsheetid
+208 Block]
+191 Block]/display
+17 Block]/displayheight
+17 Block]/displaywidth
+17 Block]/displayx
+17 Block]/displayy
+208 Block]/font
+208 Block]/loginhibit
+17 Block]/narrative
+206 Block]/subsheetid
+30 Calculation]
+30 Calculation]/calculation
+18 Calculation]/display
+12 Calculation]/displayheight
+12 Calculation]/displaywidth
+12 Calculation]/displayx
+12 Calculation]/displayy
+24 Calculation]/font
+30 Calculation]/loginhibit
+12 Calculation]/narrative
+30 Calculation]/onsuccess
+30 Calculation]/subsheetid
+1 ChoiceEnd]
+1 ChoiceEnd]/displayheight
+1 ChoiceEnd]/displaywidth
+1 ChoiceEnd]/displayx
+1 ChoiceEnd]/displayy
+1 ChoiceEnd]/font
+1 ChoiceEnd]/groupid
+1 ChoiceEnd]/loginhibit
+1 ChoiceEnd]/narrative
+1 ChoiceEnd]/onsuccess
+1 ChoiceEnd]/subsheetid
+1 ChoiceStart]
+1 ChoiceStart]/choices
+1 ChoiceStart]/choices/choice
+1 ChoiceStart]/choices/choice/distance
+1 ChoiceStart]/choices/choice/name
+1 ChoiceStart]/choices/choice/ontrue
+1 ChoiceStart]/displayheight
+1 ChoiceStart]/displaywidth
+1 ChoiceStart]/displayx
+1 ChoiceStart]/displayy
+1 ChoiceStart]/font
+1 ChoiceStart]/groupid
+1 ChoiceStart]/loginhibit
+1 ChoiceStart]/narrative
+1 ChoiceStart]/subsheetid
+123 Code]
+123 Code]/code
+120 Code]/display
+3 Code]/displayheight
+3 Code]/displaywidth
+3 Code]/displayx
+3 Code]/displayy
+114 Code]/font
+119 Code]/inputs
+424 Code]/inputs/input
+122 Code]/loginhibit
+6 Code]/narrative
+123 Code]/onsuccess
+58 Code]/outputs
+86 Code]/outputs/output
+123 Code]/subsheetid
+20 Collection]
+20 Collection]/alwaysinit
+9 Collection]/collectioninfo
+16 Collection]/collectioninfo/field
+20 Collection]/datatype
+12 Collection]/display
+8 Collection]/displayheight
+8 Collection]/displaywidth
+8 Collection]/displayx
+8 Collection]/displayy
+15 Collection]/font
+9 Collection]/loginhibit
+8 Collection]/narrative
+19 Collection]/private
+20 Collection]/subsheetid
+577 Data]
+577 Data]/alwaysinit
+577 Data]/datatype
+545 Data]/display
+32 Data]/displayheight
+32 Data]/displaywidth
+32 Data]/displayx
+32 Data]/displayy
+1 Data]/exposure
+436 Data]/font
+569 Data]/initialvalue
+8 Data]/initialvalueenc
+62 Data]/loginhibit
+36 Data]/narrative
+568 Data]/private
+569 Data]/subsheetid
+78 Decision]
+78 Decision]/decision
+57 Decision]/display
+21 Decision]/displayheight
+21 Decision]/displaywidth
+21 Decision]/displayx
+21 Decision]/displayy
+60 Decision]/font
+77 Decision]/loginhibit
+23 Decision]/narrative
+78 Decision]/onfalse
+78 Decision]/ontrue
+78 Decision]/subsheetid
+162 End]
+143 End]/display
+19 End]/displayheight
+19 End]/displaywidth
+19 End]/displayx
+19 End]/displayy
+98 End]/font
+162 End]/loginhibit
+19 End]/narrative
+51 End]/outputs
+56 End]/outputs/output
+154 End]/subsheetid
+50 Exception]
+41 Exception]/display
+9 Exception]/displayheight
+9 Exception]/displaywidth
+9 Exception]/displayx
+9 Exception]/displayy
+50 Exception]/exception
+40 Exception]/font
+7 Exception]/loginhibit
+10 Exception]/narrative
+50 Exception]/subsheetid
+7 LoopEnd]
+1 LoopEnd]/display
+6 LoopEnd]/displayheight
+6 LoopEnd]/displaywidth
+6 LoopEnd]/displayx
+6 LoopEnd]/displayy
+7 LoopEnd]/font
+7 LoopEnd]/groupid
+7 LoopEnd]/loginhibit
+6 LoopEnd]/narrative
+7 LoopEnd]/onsuccess
+7 LoopEnd]/subsheetid
+7 LoopStart]
+1 LoopStart]/display
+6 LoopStart]/displayheight
+6 LoopStart]/displaywidth
+6 LoopStart]/displayx
+6 LoopStart]/displayy
+7 LoopStart]/font
+7 LoopStart]/groupid
+7 LoopStart]/loginhibit
+7 LoopStart]/loopdata
+7 LoopStart]/looptype
+6 LoopStart]/narrative
+7 LoopStart]/onsuccess
+7 LoopStart]/subsheetid
+4 MultipleCalculation]
+4 MultipleCalculation]/displayheight
+4 MultipleCalculation]/displaywidth
+4 MultipleCalculation]/displayx
+4 MultipleCalculation]/displayy
+4 MultipleCalculation]/font
+4 MultipleCalculation]/loginhibit
+4 MultipleCalculation]/narrative
+4 MultipleCalculation]/onsuccess
+4 MultipleCalculation]/steps
+9 MultipleCalculation]/steps/calculation
+4 MultipleCalculation]/subsheetid
+4 Navigate]
+4 Navigate]/displayheight
+4 Navigate]/displaywidth
+4 Navigate]/displayx
+4 Navigate]/displayy
+4 Navigate]/font
+4 Navigate]/loginhibit
+4 Navigate]/narrative
+4 Navigate]/onsuccess
+4 Navigate]/step
+4 Navigate]/step/action
+2 Navigate]/step/action/arguments
+9 Navigate]/step/action/arguments/argument
+9 Navigate]/step/action/arguments/argument/id
+9 Navigate]/step/action/arguments/argument/value
+4 Navigate]/step/action/id
+4 Navigate]/step/element
+4 Navigate]/subsheetid
+21 Note]
+10 Note]/display
+11 Note]/displayheight
+11 Note]/displaywidth
+11 Note]/displayx
+11 Note]/displayy
+16 Note]/font
+11 Note]/loginhibit
+21 Note]/narrative
+5 Note]/onsuccess
+15 Note]/subsheetid
+8 ProcessInfo]
+8 ProcessInfo]/code
+4 ProcessInfo]/display
+4 ProcessInfo]/displayheight
+4 ProcessInfo]/displaywidth
+4 ProcessInfo]/displayx
+4 ProcessInfo]/displayy
+5 ProcessInfo]/font
+8 ProcessInfo]/globalcode
+8 ProcessInfo]/imports
+42 ProcessInfo]/imports/import
+8 ProcessInfo]/language
+1 ProcessInfo]/loginhibit
+4 ProcessInfo]/narrative
+8 ProcessInfo]/references
+34 ProcessInfo]/references/reference
+1 Read]
+1 Read]/displayheight
+1 Read]/displaywidth
+1 Read]/displayx
+1 Read]/displayy
+1 Read]/font
+1 Read]/loginhibit
+1 Read]/narrative
+1 Read]/onsuccess
+1 Read]/step
+1 Read]/step/action
+1 Read]/step/action/id
+1 Read]/step/element
+1 Read]/subsheetid
+10 Recover]
+10 Recover]/display
+4 Recover]/font
+10 Recover]/loginhibit
+10 Recover]/onsuccess
+10 Recover]/subsheetid
+10 Resume]
+10 Resume]/display
+4 Resume]/font
+10 Resume]/loginhibit
+10 Resume]/onsuccess
+10 Resume]/subsheetid
+159 Start]
+140 Start]/display
+19 Start]/displayheight
+19 Start]/displaywidth
+19 Start]/displayx
+19 Start]/displayy
+143 Start]/font
+130 Start]/inputs
+432 Start]/inputs/input
+159 Start]/loginhibit
+19 Start]/narrative
+159 Start]/onsuccess
+1 Start]/postconditions
+1 Start]/postconditions/condition
+10 Start]/preconditions
+14 Start]/preconditions/condition
+151 Start]/subsheetid
+151 SubSheetInfo]
+136 SubSheetInfo]/display
+15 SubSheetInfo]/displayheight
+15 SubSheetInfo]/displaywidth
+15 SubSheetInfo]/displayx
+15 SubSheetInfo]/displayy
+87 SubSheetInfo]/font
+6 SubSheetInfo]/loginhibit
+130 SubSheetInfo]/narrative
+151 SubSheetInfo]/subsheetid
+73 SubSheet]
+69 SubSheet]/display
+4 SubSheet]/displayheight
+4 SubSheet]/displaywidth
+4 SubSheet]/displayx
+4 SubSheet]/displayy
+70 SubSheet]/font
+67 SubSheet]/inputs
+133 SubSheet]/inputs/input
+73 SubSheet]/loginhibit
+4 SubSheet]/narrative
+73 SubSheet]/onsuccess
+19 SubSheet]/outputs
+19 SubSheet]/outputs/output
+73 SubSheet]/processid
+73 SubSheet]/subsheetid
+3 WaitEnd]
+1 WaitEnd]/display
+2 WaitEnd]/displayheight
+2 WaitEnd]/displaywidth
+2 WaitEnd]/displayx
+2 WaitEnd]/displayy
+2 WaitEnd]/font
+3 WaitEnd]/groupid
+3 WaitEnd]/loginhibit
+2 WaitEnd]/narrative
+3 WaitEnd]/onsuccess
+3 WaitEnd]/subsheetid
+3 WaitStart]
+3 WaitStart]/choices
+2 WaitStart]/choices/choice
+2 WaitStart]/choices/choice/comparetype
+2 WaitStart]/choices/choice/condition
+2 WaitStart]/choices/choice/condition/id
+2 WaitStart]/choices/choice/distance
+2 WaitStart]/choices/choice/element
+2 WaitStart]/choices/choice/name
+2 WaitStart]/choices/choice/ontrue
+1 WaitStart]/display
+2 WaitStart]/displayheight
+2 WaitStart]/displaywidth
+2 WaitStart]/displayx
+2 WaitStart]/displayy
+2 WaitStart]/font
+3 WaitStart]/groupid
+3 WaitStart]/loginhibit
+2 WaitStart]/narrative
+1 WaitStart]/onsuccess
+3 WaitStart]/subsheetid
+3 WaitStart]/timeout
+1 Write]
+1 Write]/displayheight
+1 Write]/displaywidth
+1 Write]/displayx
+1 Write]/displayy
+1 Write]/font
+1 Write]/loginhibit
+1 Write]/narrative
+1 Write]/onsuccess
+2 Write]/step
+2 Write]/step/element
+1 Write]/subsheetid
+65 Action]
+11 Action]/display
+54 Action]/displayheight
+54 Action]/displaywidth
+54 Action]/displayx
+54 Action]/displayy
+54 Action]/font
+57 Action]/inputs
+169 Action]/inputs/input
+11 Action]/loginhibit
+6 Action]/loginhibitparameters
+54 Action]/narrative
+61 Action]/onsuccess
+35 Action]/outputs
+84 Action]/outputs/output
+65 Action]/resource
+22 Action]/subsheetid
+11 Anchor]
+11 Anchor]/displayheight
+11 Anchor]/displaywidth
+11 Anchor]/displayx
+11 Anchor]/displayy
+11 Anchor]/font
+11 Anchor]/narrative
+11 Anchor]/onsuccess
+3 Anchor]/subsheetid
+8 Block]
+8 Block]/displayheight
+8 Block]/displaywidth
+8 Block]/displayx
+8 Block]/displayy
+8 Block]/font
+8 Block]/narrative
+3 Block]/subsheetid
+9 Calculation]
+9 Calculation]/calculation
+9 Calculation]/displayheight
+9 Calculation]/displaywidth
+9 Calculation]/displayx
+9 Calculation]/displayy
+9 Calculation]/font
+9 Calculation]/narrative
+8 Calculation]/onsuccess
+3 Calculation]/subsheetid
+20 Collection]
+20 Collection]/alwaysinit
+12 Collection]/collectioninfo
+23 Collection]/collectioninfo/field
+20 Collection]/datatype
+20 Collection]/displayheight
+20 Collection]/displaywidth
+20 Collection]/displayx
+20 Collection]/displayy
+20 Collection]/font
+4 Collection]/initialvalue
+8 Collection]/initialvalue/row
+24 Collection]/initialvalue/row/field
+20 Collection]/narrative
+17 Collection]/private
+2 Collection]/subsheetid
+61 Data]
+61 Data]/alwaysinit
+61 Data]/datatype
+17 Data]/display
+44 Data]/displayheight
+44 Data]/displaywidth
+44 Data]/displayx
+44 Data]/displayy
+3 Data]/exposure
+47 Data]/font
+59 Data]/initialvalue
+2 Data]/initialvalueenc
+3 Data]/loginhibit
+45 Data]/narrative
+55 Data]/private
+14 Data]/subsheetid
+11 Decision]
+11 Decision]/decision
+11 Decision]/displayheight
+11 Decision]/displaywidth
+11 Decision]/displayx
+11 Decision]/displayy
+11 Decision]/font
+11 Decision]/narrative
+9 Decision]/onfalse
+9 Decision]/ontrue
+4 Decision]/subsheetid
+15 End]
+3 End]/display
+12 End]/displayheight
+12 End]/displaywidth
+12 End]/displayx
+12 End]/displayy
+12 End]/font
+12 End]/narrative
+1 End]/outputs
+1 End]/outputs/output
+4 End]/subsheetid
+4 Exception]
+4 Exception]/displayheight
+4 Exception]/displaywidth
+4 Exception]/displayx
+4 Exception]/displayy
+4 Exception]/exception
+4 Exception]/font
+4 Exception]/narrative
+3 Exception]/subsheetid
+1 LoopEnd]
+1 LoopEnd]/displayheight
+1 LoopEnd]/displaywidth
+1 LoopEnd]/displayx
+1 LoopEnd]/displayy
+1 LoopEnd]/font
+1 LoopEnd]/groupid
+1 LoopEnd]/narrative
+1 LoopEnd]/subsheetid
+1 LoopStart]
+1 LoopStart]/displayheight
+1 LoopStart]/displaywidth
+1 LoopStart]/displayx
+1 LoopStart]/displayy
+1 LoopStart]/font
+1 LoopStart]/groupid
+1 LoopStart]/loopdata
+1 LoopStart]/looptype
+1 LoopStart]/narrative
+1 LoopStart]/subsheetid
+1 Note]
+1 Note]/display
+1 Note]/font
+1 Note]/loginhibit
+1 Note]/narrative
+11 ProcessInfo]
+3 ProcessInfo]/display
+8 ProcessInfo]/displayheight
+8 ProcessInfo]/displaywidth
+8 ProcessInfo]/displayx
+8 ProcessInfo]/displayy
+8 ProcessInfo]/font
+8 ProcessInfo]/narrative
+4 Recover]
+4 Recover]/displayheight
+4 Recover]/displaywidth
+4 Recover]/displayx
+4 Recover]/displayy
+4 Recover]/font
+4 Recover]/narrative
+4 Recover]/onsuccess
+1 Recover]/subsheetid
+4 Resume]
+4 Resume]/displayheight
+4 Resume]/displaywidth
+4 Resume]/displayx
+4 Resume]/displayy
+4 Resume]/font
+4 Resume]/narrative
+4 Resume]/onsuccess
+1 Resume]/subsheetid
+15 Start]
+3 Start]/display
+12 Start]/displayheight
+12 Start]/displaywidth
+12 Start]/displayx
+12 Start]/displayy
+12 Start]/font
+12 Start]/narrative
+13 Start]/onsuccess
+4 Start]/subsheetid
+4 SubSheetInfo]
+4 SubSheetInfo]/displayheight
+4 SubSheetInfo]/displaywidth
+4 SubSheetInfo]/displayx
+4 SubSheetInfo]/displayy
+4 SubSheetInfo]/font
+4 SubSheetInfo]/narrative
+4 SubSheetInfo]/subsheetid
+3 SubSheet]
+3 SubSheet]/displayheight
+3 SubSheet]/displaywidth
+3 SubSheet]/displayx
+3 SubSheet]/displayy
+3 SubSheet]/font
+3 SubSheet]/narrative
+3 SubSheet]/onsuccess
+3 SubSheet]/processid
+15 @ Action]/display@x
+15 @ Action]/display@y
+11 @ Action]/font@color
+11 @ Action]/font@family
+11 @ Action]/font@size
+11 @ Action]/font@style
+31 @ Action]/inputs/input@expr
+20 @ Action]/inputs/input@friendlyname
+31 @ Action]/inputs/input@name
+27 @ Action]/inputs/input@narrative
+31 @ Action]/inputs/input@type
+16 @ Action]/loginhibit@onsuccess
+26 @ Action]/outputs/output@friendlyname
+29 @ Action]/outputs/output@name
+10 @ Action]/outputs/output@narrative
+29 @ Action]/outputs/output@stage
+29 @ Action]/outputs/output@type
+26 @ Action]/resource@action
+26 @ Action]/resource@object
+26 @ Action]@name
+26 @ Action]@stageid
+26 @ Action]@type
+32 @ Anchor]/display@h
+32 @ Anchor]/display@w
+32 @ Anchor]/display@x
+32 @ Anchor]/display@y
+32 @ Anchor]/font@color
+32 @ Anchor]/font@family
+32 @ Anchor]/font@size
+32 @ Anchor]/font@style
+8 @ Anchor]/loginhibit@onsuccess
+53 @ Anchor]@name
+53 @ Anchor]@stageid
+53 @ Anchor]@type
+191 @ Block]/display@h
+191 @ Block]/display@w
+191 @ Block]/display@x
+191 @ Block]/display@y
+208 @ Block]/font@color
+208 @ Block]/font@family
+208 @ Block]/font@size
+208 @ Block]/font@style
+208 @ Block]@name
+208 @ Block]@stageid
+208 @ Block]@type
+30 @ Calculation]/calculation@expression
+30 @ Calculation]/calculation@stage
+1 @ Calculation]/display@h
+1 @ Calculation]/display@w
+18 @ Calculation]/display@x
+18 @ Calculation]/display@y
+24 @ Calculation]/font@color
+24 @ Calculation]/font@family
+24 @ Calculation]/font@size
+24 @ Calculation]/font@style
+3 @ Calculation]/loginhibit@onsuccess
+30 @ Calculation]@name
+30 @ Calculation]@stageid
+30 @ Calculation]@type
+1 @ ChoiceEnd]/font@color
+1 @ ChoiceEnd]/font@family
+1 @ ChoiceEnd]/font@size
+1 @ ChoiceEnd]/font@style
+1 @ ChoiceEnd]@name
+1 @ ChoiceEnd]@stageid
+1 @ ChoiceEnd]@type
+1 @ ChoiceStart]/choices/choice@expression
+1 @ ChoiceStart]/font@color
+1 @ ChoiceStart]/font@family
+1 @ ChoiceStart]/font@size
+1 @ ChoiceStart]/font@style
+1 @ ChoiceStart]@name
+1 @ ChoiceStart]@stageid
+1 @ ChoiceStart]@type
+102 @ Code]/display@h
+102 @ Code]/display@w
+120 @ Code]/display@x
+120 @ Code]/display@y
+114 @ Code]/font@color
+114 @ Code]/font@family
+114 @ Code]/font@size
+114 @ Code]/font@style
+424 @ Code]/inputs/input@expr
+424 @ Code]/inputs/input@name
+424 @ Code]/inputs/input@type
+1 @ Code]/loginhibit@onsuccess
+86 @ Code]/outputs/output@name
+86 @ Code]/outputs/output@stage
+86 @ Code]/outputs/output@type
+123 @ Code]@name
+123 @ Code]@stageid
+123 @ Code]@type
+2 @ Collection]/collectioninfo/field@description
+16 @ Collection]/collectioninfo/field@name
+16 @ Collection]/collectioninfo/field@type
+4 @ Collection]/display@h
+4 @ Collection]/display@w
+12 @ Collection]/display@x
+12 @ Collection]/display@y
+15 @ Collection]/font@color
+15 @ Collection]/font@family
+15 @ Collection]/font@size
+15 @ Collection]/font@style
+20 @ Collection]@name
+20 @ Collection]@stageid
+20 @ Collection]@type
+66 @ Data]/display@h
+66 @ Data]/display@w
+545 @ Data]/display@x
+545 @ Data]/display@y
+436 @ Data]/font@color
+436 @ Data]/font@family
+436 @ Data]/font@size
+436 @ Data]/font@style
+13 @ Data]/initialvalue@{http://www.w3.org/XML/1998/namespace}space
+2 @ Data]/loginhibit@onsuccess
+577 @ Data]@name
+577 @ Data]@stageid
+577 @ Data]@type
+78 @ Decision]/decision@expression
+6 @ Decision]/display@h
+6 @ Decision]/display@w
+57 @ Decision]/display@x
+57 @ Decision]/display@y
+60 @ Decision]/font@color
+60 @ Decision]/font@family
+60 @ Decision]/font@size
+60 @ Decision]/font@style
+78 @ Decision]@name
+78 @ Decision]@stageid
+78 @ Decision]@type
+143 @ End]/display@x
+143 @ End]/display@y
+98 @ End]/font@color
+98 @ End]/font@family
+98 @ End]/font@size
+98 @ End]/font@style
+56 @ End]/outputs/output@name
+46 @ End]/outputs/output@narrative
+56 @ End]/outputs/output@stage
+56 @ End]/outputs/output@type
+162 @ End]@name
+162 @ End]@stageid
+162 @ End]@type
+4 @ Exception]/display@h
+4 @ Exception]/display@w
+41 @ Exception]/display@x
+41 @ Exception]/display@y
+50 @ Exception]/exception@detail
+11 @ Exception]/exception@localized
+50 @ Exception]/exception@type
+1 @ Exception]/exception@usecurrent
+40 @ Exception]/font@color
+40 @ Exception]/font@family
+40 @ Exception]/font@size
+40 @ Exception]/font@style
+7 @ Exception]/loginhibit@onsuccess
+50 @ Exception]@name
+50 @ Exception]@stageid
+50 @ Exception]@type
+1 @ LoopEnd]/display@h
+1 @ LoopEnd]/display@w
+1 @ LoopEnd]/display@x
+1 @ LoopEnd]/display@y
+7 @ LoopEnd]/font@color
+7 @ LoopEnd]/font@family
+7 @ LoopEnd]/font@size
+7 @ LoopEnd]/font@style
+7 @ LoopEnd]@name
+7 @ LoopEnd]@stageid
+7 @ LoopEnd]@type
+1 @ LoopStart]/display@h
+1 @ LoopStart]/display@w
+1 @ LoopStart]/display@x
+1 @ LoopStart]/display@y
+7 @ LoopStart]/font@color
+7 @ LoopStart]/font@family
+7 @ LoopStart]/font@size
+7 @ LoopStart]/font@style
+7 @ LoopStart]@name
+7 @ LoopStart]@stageid
+7 @ LoopStart]@type
+4 @ MultipleCalculation]/font@color
+4 @ MultipleCalculation]/font@family
+4 @ MultipleCalculation]/font@size
+4 @ MultipleCalculation]/font@style
+9 @ MultipleCalculation]/steps/calculation@expression
+9 @ MultipleCalculation]/steps/calculation@stage
+4 @ MultipleCalculation]@name
+4 @ MultipleCalculation]@stageid
+4 @ MultipleCalculation]@type
+4 @ Navigate]/font@color
+4 @ Navigate]/font@family
+4 @ Navigate]/font@size
+4 @ Navigate]/font@style
+4 @ Navigate]/step/element@id
+4 @ Navigate]@name
+4 @ Navigate]@stageid
+4 @ Navigate]@type
+9 @ Note]/display@h
+9 @ Note]/display@w
+10 @ Note]/display@x
+10 @ Note]/display@y
+16 @ Note]/font@color
+16 @ Note]/font@family
+16 @ Note]/font@size
+16 @ Note]/font@style
+21 @ Note]@name
+21 @ Note]@stageid
+21 @ Note]@type
+4 @ ProcessInfo]/display@h
+4 @ ProcessInfo]/display@w
+4 @ ProcessInfo]/display@x
+4 @ ProcessInfo]/display@y
+5 @ ProcessInfo]/font@color
+5 @ ProcessInfo]/font@family
+5 @ ProcessInfo]/font@size
+5 @ ProcessInfo]/font@style
+8 @ ProcessInfo]@name
+8 @ ProcessInfo]@stageid
+8 @ ProcessInfo]@type
+1 @ Read]/font@color
+1 @ Read]/font@family
+1 @ Read]/font@size
+1 @ Read]/font@style
+1 @ Read]/step/element@id
+1 @ Read]/step@stage
+1 @ Read]@name
+1 @ Read]@stageid
+1 @ Read]@type
+1 @ Recover]/display@h
+1 @ Recover]/display@w
+10 @ Recover]/display@x
+10 @ Recover]/display@y
+4 @ Recover]/font@color
+4 @ Recover]/font@family
+4 @ Recover]/font@size
+4 @ Recover]/font@style
+10 @ Recover]@name
+10 @ Recover]@stageid
+10 @ Recover]@type
+1 @ Resume]/display@h
+1 @ Resume]/display@w
+10 @ Resume]/display@x
+10 @ Resume]/display@y
+4 @ Resume]/font@color
+4 @ Resume]/font@family
+4 @ Resume]/font@size
+4 @ Resume]/font@style
+10 @ Resume]@name
+10 @ Resume]@stageid
+10 @ Resume]@type
+140 @ Start]/display@x
+140 @ Start]/display@y
+143 @ Start]/font@color
+143 @ Start]/font@family
+143 @ Start]/font@size
+143 @ Start]/font@style
+432 @ Start]/inputs/input@name
+152 @ Start]/inputs/input@narrative
+432 @ Start]/inputs/input@stage
+432 @ Start]/inputs/input@type
+1 @ Start]/postconditions/condition@narrative
+14 @ Start]/preconditions/condition@narrative
+159 @ Start]@name
+159 @ Start]@stageid
+159 @ Start]@type
+136 @ SubSheetInfo]/display@h
+136 @ SubSheetInfo]/display@w
+136 @ SubSheetInfo]/display@x
+136 @ SubSheetInfo]/display@y
+87 @ SubSheetInfo]/font@color
+87 @ SubSheetInfo]/font@family
+87 @ SubSheetInfo]/font@size
+87 @ SubSheetInfo]/font@style
+151 @ SubSheetInfo]@name
+151 @ SubSheetInfo]@stageid
+151 @ SubSheetInfo]@type
+65 @ SubSheet]/display@h
+65 @ SubSheet]/display@w
+69 @ SubSheet]/display@x
+69 @ SubSheet]/display@y
+70 @ SubSheet]/font@color
+70 @ SubSheet]/font@family
+70 @ SubSheet]/font@size
+70 @ SubSheet]/font@style
+133 @ SubSheet]/inputs/input@expr
+2 @ SubSheet]/inputs/input@friendlyname
+133 @ SubSheet]/inputs/input@name
+69 @ SubSheet]/inputs/input@narrative
+133 @ SubSheet]/inputs/input@type
+4 @ SubSheet]/loginhibit@onsuccess
+2 @ SubSheet]/outputs/output@friendlyname
+19 @ SubSheet]/outputs/output@name
+11 @ SubSheet]/outputs/output@narrative
+19 @ SubSheet]/outputs/output@stage
+19 @ SubSheet]/outputs/output@type
+73 @ SubSheet]@name
+73 @ SubSheet]@stageid
+73 @ SubSheet]@type
+1 @ WaitEnd]/display@h
+1 @ WaitEnd]/display@w
+1 @ WaitEnd]/display@x
+1 @ WaitEnd]/display@y
+2 @ WaitEnd]/font@color
+2 @ WaitEnd]/font@family
+2 @ WaitEnd]/font@size
+2 @ WaitEnd]/font@style
+3 @ WaitEnd]@name
+3 @ WaitEnd]@stageid
+3 @ WaitEnd]@type
+2 @ WaitStart]/choices/choice/element@id
+2 @ WaitStart]/choices/choice@reply
+1 @ WaitStart]/display@h
+1 @ WaitStart]/display@w
+1 @ WaitStart]/display@x
+1 @ WaitStart]/display@y
+2 @ WaitStart]/font@color
+2 @ WaitStart]/font@family
+2 @ WaitStart]/font@size
+2 @ WaitStart]/font@style
+3 @ WaitStart]@name
+3 @ WaitStart]@stageid
+3 @ WaitStart]@type
+1 @ Write]/font@color
+1 @ Write]/font@family
+1 @ Write]/font@size
+1 @ Write]/font@style
+2 @ Write]/step/element@id
+2 @ Write]/step@expr
+1 @ Write]@name
+1 @ Write]@stageid
+1 @ Write]@type
+11 @ Action]/display@x
+11 @ Action]/display@y
+54 @ Action]/font@color
+54 @ Action]/font@family
+54 @ Action]/font@size
+54 @ Action]/font@style
+169 @ Action]/inputs/input@expr
+29 @ Action]/inputs/input@friendlyname
+169 @ Action]/inputs/input@name
+150 @ Action]/inputs/input@narrative
+169 @ Action]/inputs/input@type
+11 @ Action]/loginhibit@onsuccess
+12 @ Action]/outputs/output@friendlyname
+84 @ Action]/outputs/output@name
+80 @ Action]/outputs/output@narrative
+84 @ Action]/outputs/output@stage
+84 @ Action]/outputs/output@type
+65 @ Action]/resource@action
+65 @ Action]/resource@object
+65 @ Action]@name
+65 @ Action]@stageid
+65 @ Action]@type
+11 @ Anchor]/font@color
+11 @ Anchor]/font@family
+11 @ Anchor]/font@size
+11 @ Anchor]/font@style
+11 @ Anchor]@name
+11 @ Anchor]@stageid
+11 @ Anchor]@type
+8 @ Block]/font@color
+8 @ Block]/font@family
+8 @ Block]/font@size
+8 @ Block]/font@style
+8 @ Block]@name
+8 @ Block]@stageid
+8 @ Block]@type
+9 @ Calculation]/calculation@expression
+9 @ Calculation]/calculation@stage
+9 @ Calculation]/font@color
+9 @ Calculation]/font@family
+9 @ Calculation]/font@size
+9 @ Calculation]/font@style
+9 @ Calculation]@name
+9 @ Calculation]@stageid
+9 @ Calculation]@type
+5 @ Collection]/collectioninfo/field@description
+23 @ Collection]/collectioninfo/field@name
+23 @ Collection]/collectioninfo/field@type
+20 @ Collection]/font@color
+20 @ Collection]/font@family
+20 @ Collection]/font@size
+20 @ Collection]/font@style
+24 @ Collection]/initialvalue/row/field@name
+24 @ Collection]/initialvalue/row/field@type
+24 @ Collection]/initialvalue/row/field@value
+20 @ Collection]@name
+20 @ Collection]@stageid
+20 @ Collection]@type
+10 @ Data]/display@h
+10 @ Data]/display@w
+17 @ Data]/display@x
+17 @ Data]/display@y
+47 @ Data]/font@color
+47 @ Data]/font@family
+47 @ Data]/font@size
+47 @ Data]/font@style
+21 @ Data]/initialvalue@{http://www.w3.org/XML/1998/namespace}space
+3 @ Data]/loginhibit@onsuccess
+61 @ Data]@name
+61 @ Data]@stageid
+61 @ Data]@type
+11 @ Decision]/decision@expression
+11 @ Decision]/font@color
+11 @ Decision]/font@family
+11 @ Decision]/font@size
+11 @ Decision]/font@style
+11 @ Decision]@name
+11 @ Decision]@stageid
+11 @ Decision]@type
+3 @ End]/display@x
+3 @ End]/display@y
+12 @ End]/font@color
+12 @ End]/font@family
+12 @ End]/font@size
+12 @ End]/font@style
+1 @ End]/outputs/output@name
+1 @ End]/outputs/output@narrative
+1 @ End]/outputs/output@stage
+1 @ End]/outputs/output@type
+15 @ End]@name
+15 @ End]@stageid
+15 @ End]@type
+4 @ Exception]/exception@detail
+4 @ Exception]/exception@type
+1 @ Exception]/exception@usecurrent
+4 @ Exception]/font@color
+4 @ Exception]/font@family
+4 @ Exception]/font@size
+4 @ Exception]/font@style
+4 @ Exception]@name
+4 @ Exception]@stageid
+4 @ Exception]@type
+1 @ LoopEnd]/font@color
+1 @ LoopEnd]/font@family
+1 @ LoopEnd]/font@size
+1 @ LoopEnd]/font@style
+1 @ LoopEnd]@name
+1 @ LoopEnd]@stageid
+1 @ LoopEnd]@type
+1 @ LoopStart]/font@color
+1 @ LoopStart]/font@family
+1 @ LoopStart]/font@size
+1 @ LoopStart]/font@style
+1 @ LoopStart]@name
+1 @ LoopStart]@stageid
+1 @ LoopStart]@type
+1 @ Note]/display@h
+1 @ Note]/display@w
+1 @ Note]/display@x
+1 @ Note]/display@y
+1 @ Note]/font@color
+1 @ Note]/font@family
+1 @ Note]/font@size
+1 @ Note]/font@style
+1 @ Note]@name
+1 @ Note]@stageid
+1 @ Note]@type
+3 @ ProcessInfo]/display@h
+3 @ ProcessInfo]/display@w
+3 @ ProcessInfo]/display@x
+3 @ ProcessInfo]/display@y
+8 @ ProcessInfo]/font@color
+8 @ ProcessInfo]/font@family
+8 @ ProcessInfo]/font@size
+8 @ ProcessInfo]/font@style
+11 @ ProcessInfo]@name
+11 @ ProcessInfo]@stageid
+11 @ ProcessInfo]@type
+4 @ Recover]/font@color
+4 @ Recover]/font@family
+4 @ Recover]/font@size
+4 @ Recover]/font@style
+4 @ Recover]@name
+4 @ Recover]@stageid
+4 @ Recover]@type
+4 @ Resume]/font@color
+4 @ Resume]/font@family
+4 @ Resume]/font@size
+4 @ Resume]/font@style
+4 @ Resume]@name
+4 @ Resume]@stageid
+4 @ Resume]@type
+3 @ Start]/display@x
+3 @ Start]/display@y
+12 @ Start]/font@color
+12 @ Start]/font@family
+12 @ Start]/font@size
+12 @ Start]/font@style
+15 @ Start]@name
+15 @ Start]@stageid
+15 @ Start]@type
+4 @ SubSheetInfo]/font@color
+4 @ SubSheetInfo]/font@family
+4 @ SubSheetInfo]/font@size
+4 @ SubSheetInfo]/font@style
+4 @ SubSheetInfo]@name
+4 @ SubSheetInfo]@stageid
+4 @ SubSheetInfo]@type
+3 @ SubSheet]/font@color
+3 @ SubSheet]/font@family
+3 @ SubSheet]/font@size
+3 @ SubSheet]/font@style
+3 @ SubSheet]@name
+3 @ SubSheet]@stageid
+3 @ SubSheet]@type
