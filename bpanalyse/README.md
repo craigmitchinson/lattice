@@ -2,19 +2,41 @@
 
 bpanalyse reads Blue Prism 7.2 release files (`.bprelease`) and produces an estate inventory, a dependency graph, quality metrics, findings and impact queries. It is deterministic, runs offline and uses no LLM. The contract is in `SPEC.md`.
 
+## Where it runs
+
+On your own machine, and nowhere else. The repository is only where the code lives. The tool makes no network calls and writes only to the output directory you name. Keep real release files outside the repository folder (for example `~/bp-releases` on a Mac or `C:\bp-releases` on Windows) so they are never in a workspace that an editor, an editor extension or git can see. The `.gitignore` also blocks `*.bprelease` and `bpanalyse/input/` as a second line of defence.
+
 ## Install
 
-Python 3.11 or later is needed. From this directory:
+Python 3.11 or later is needed.
 
-    pip install -e .
+Mac, in Terminal (if `python3` asks for developer tools, run `xcode-select --install` once, or install Python from python.org):
 
-The runtime dependencies are openpyxl and pyyaml. To run the tests you also need pytest (`pip install -e ".[test]"`).
+    git clone https://github.com/craigmitchinson/lattice.git
+    cd lattice/bpanalyse
+    python3 -m venv .venv
+    source .venv/bin/activate
+    pip install -e ".[test]"
+    python -m pytest -q
+
+Windows, in PowerShell (install Python from python.org with "Add to PATH" ticked):
+
+    git clone https://github.com/craigmitchinson/lattice.git
+    cd lattice\bpanalyse
+    py -m venv .venv
+    .venv\Scripts\activate
+    pip install -e ".[test]"
+    python -m pytest -q
+
+Activate the virtual environment (`source .venv/bin/activate` or `.venv\Scripts\activate`) each time you open a new terminal before running the tool.
+
+The runtime dependencies are openpyxl and pyyaml. `[test]` adds pytest.
 
 ## Run
 
-    python -m bpanalyse run ./input ./output
+    python -m bpanalyse run ~/bp-releases ~/bp-output
 
-This reads every `*.bprelease` file in `./input` and writes `estate.sqlite`, `inventory.xlsx`, `dependencies.xlsx`, `release_map.xlsx`, `metrics.xlsx`, `findings.xlsx`, `graph.json`, `graph.graphml` and `run.log` to `./output`. The exit code is 0 on success, 2 if any input file failed to parse (the other files are still processed and `run.log` names the failing file and line), and 1 on a usage error.
+This reads every `*.bprelease` file in the first directory and writes `estate.sqlite`, `inventory.xlsx`, `dependencies.xlsx`, `release_map.xlsx`, `metrics.xlsx`, `findings.xlsx`, `graph.json`, `graph.graphml` and `run.log` to `./output`. The exit code is 0 on success, 2 if any input file failed to parse (the other files are still processed and `run.log` names the failing file and line), and 1 on a usage error.
 
 Sensitive literals are masked in memory before parsing, using the patterns in `src/bpanalyse/config/mask_patterns.yaml`. The internal Work Queues and Credentials object names, and the input names used to find the queue or credential, are in `src/bpanalyse/config/internal_objects.yaml`. Use `--config-dir` to point at a different config directory.
 
