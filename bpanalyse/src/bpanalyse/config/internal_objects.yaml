@@ -1,11 +1,15 @@
-# Blue Prism internal objects and the input names used to identify the item used.
-# Correct these against a real 7.2 export if they differ.
-work_queues:
-  object_name: Work Queues
-  queue_name_inputs:
-    - Queue Name
-credentials:
-  object_name: Credentials
-  credential_name_inputs:
-    - Credentials Name
-    - Name
+# Blue Prism built-in objects, by the object name a release stores in an Action stage's `resource object`.
+# One entry per object: {object, role, name_input}.
+#   role: work_queue  -> the call also becomes a uses_queue edge; name_input is the input holding the queue name
+#         credential  -> the call also becomes a uses_credential edge; name_input is the input holding the credential name
+#         anything else (e.g. collection) -> only the calls_object edge, flagged is_internal
+# Internal objects are never external_object rows and never appear in release_map. Add more entries as they turn up.
+internal_objects:
+  - object: Blueprism.Automate.clsWorkQueuesActions
+    role: work_queue
+    name_input: Queue Name
+  - object: Blueprism.Automate.clsCredentialsActions
+    role: credential
+    name_input: Credentials Name
+  - object: Blueprism.AutomateProcessCore.clsCollectionActions
+    role: collection

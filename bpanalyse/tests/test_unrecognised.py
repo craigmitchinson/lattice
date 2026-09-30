@@ -1,7 +1,8 @@
-"""SPEC 9: unknown stage types and elements are logged and the run still succeeds."""
+"""SPEC 9: unknown stage types and contents items are logged and the run still succeeds."""
 
 
 def test_unrecognised_logged(out_dir):
-    log = (out_dir / "run.log").read_text()
-    assert "[type=FutureStage]" in log
-    assert "bpr:future-thing" in log
+    lines = (out_dir / "run.log").read_text().splitlines()
+    unknown = [line for line in lines if line.startswith("unrecognised ")]
+    assert unknown == ["unrecognised /release/contents/future-thing 1", "unrecognised /release/contents/object/process/stage[FutureStage] 1"]
+    assert "file=every-stage-type.bprelease" in "\n".join(lines) and "skipped_tile=1" in "\n".join(lines)

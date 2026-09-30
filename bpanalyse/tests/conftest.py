@@ -42,33 +42,36 @@ import zipfile
 from bpanalyse.cli import DEFAULT_CONFIG
 
 NS = "http://www.blueprism.co.uk/product/release"
-MAIN = (("pg-main", "Main Page", "MainPage", "False"),)
+PNS = "http://www.blueprism.co.uk/product/process"
 
 
-def stage_xml(sid: str, name: str, kind: str, page: str = "pg-main", inner: str = "") -> str:
-    return f'<stage stageid="{sid}" name="{name}" type="{kind}"><subsheetid>{page}</subsheetid>{inner}</stage>'
+def stage_xml(sid: str, name: str, kind: str, page: str | None = None, inner: str = "") -> str:
+    """A stage; `page` None means the implicit main page (no subsheetid child)."""
+    sub = f"<subsheetid>{page}</subsheetid>" if page else ""
+    return f'<stage stageid="{sid}" name="{name}" type="{kind}">{sub}{inner}</stage>'
 
 
-def process_xml(pid: str | None, name: str, stages: list[str] = (), pages=MAIN, obj: bool = False, appdef: str = "", prefix: str = "") -> str:
+def process_xml(name: str, stages: list[str] = (), pages=(), obj: bool = False, appdef: str = "", prefix: str = "") -> str:
+    """The inner process; `pages` are the LISTED subsheets (id, name, type, published). The main page is never listed."""
     subs = "".join(f'<subsheet subsheetid="{i}" type="{t}" published="{p}"><name>{n}</name></subsheet>' for i, n, t, p in pages)
-    ident = f' id="{pid}"' if pid else ""
     kind = ' type="object"' if obj else ""
-    return f'<{prefix}process{ident} name="{name}" version="1"{kind}>{subs}{"".join(stages)}{appdef}</{prefix}process>'
+    return f'<{prefix}process name="{name}" version="1"{kind}>{subs}{"".join(stages)}{appdef}</{prefix}process>'
 
 
 def wrapper_xml(pid: str | None, name: str, body: str, obj: bool = False, escape: bool = False) -> str:
-    tag = "bpr:object" if obj else "bpr:process"
+    """A `contents` item: id and name live on the wrapper, the inner process is a child element (or escaped text)."""
+    tag = "object" if obj else "process"
     ident = f' id="{pid}"' if pid else ""
     if escape:
         body = body.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-    return f'<{tag}{ident} name="{name}">{body}</{tag}>'
+    return f'<{tag}{ident} name="{name}" xmlns="{PNS}">{body}</{tag}>'
 
 
-def release_xml(*wrappers: str, created: str = "2026-01-01T00:00:00Z", pkg: str = "pkg-1", manifest: str = "", eol: str = "\n") -> str:
+def release_xml(*items: str, created: str = "2026-01-01 00:00:00Z", pkg: str = "1", eol: str = "\n") -> str:
     head = (f'<?xml version="1.0" encoding="utf-8"?>\n<bpr:release xmlns:bpr="{NS}">\n<bpr:name>R</bpr:name>\n'
             f'<bpr:created>{created}</bpr:created>\n<bpr:package-id>{pkg}</bpr:package-id>\n'
-            f'<bpr:contents count="0">{manifest}</bpr:contents>\n')
-    return (head + "\n".join(wrappers) + "\n</bpr:release>\n").replace("\n", eol)
+            f'<bpr:contents count="{len(items)}">\n')
+    return (head + "\n".join(items) + "\n</bpr:contents>\n</bpr:release>\n").replace("\n", eol)
 
 
 def run_files(tmp_path: Path, files: dict[str, bytes | str], config_dir: Path | None = None) -> tuple[int, Path]:

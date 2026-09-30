@@ -19,3 +19,5 @@ __pycache__/
 .pytest_cache/
 *.egg-info/
 .venv/
+# bpanalyse: the public corpus is fetched by bpanalyse/fixtures/public/fetch.py, never committed.
+bpanalyse/fixtures/public/*.bprelease

@@ -3,7 +3,7 @@
 import time
 
 import pytest
-from conftest import MAIN, all_output_bytes, make_config, process_xml, release_xml, run_files, stage_xml, wrapper_xml
+from conftest import all_output_bytes, make_config, process_xml, release_xml, run_files, stage_xml, wrapper_xml
 
 from bpanalyse.cli import DEFAULT_CONFIG, main
 from bpanalyse.sanitise import ConfigError, load_mask_config, mask_text
@@ -13,7 +13,7 @@ SECRET = "hidden.person@corp.example.com"
 
 
 def _rel(*stages, extra_pages=()):
-    return release_xml(wrapper_xml(OBJ, "Obj", process_xml(OBJ, "Obj", list(stages), pages=MAIN + tuple(extra_pages), obj=True), obj=True))
+    return release_xml(wrapper_xml(OBJ, "Obj", process_xml("Obj", list(stages), pages=tuple(extra_pages), obj=True), obj=True))
 
 
 @pytest.mark.parametrize("yaml_text", [None, "", "other: 1\n", "patterns:\n", "patterns: {}\n", "- a\n"])
@@ -74,3 +74,10 @@ def test_nested_collection_initial_value_masked(tmp_path):
         "SELECT s.name, d.has_initial_value || d.is_masked FROM data_item d JOIN stage s ON s.id = d.stage_id"))
     assert rows == {"Coll": "11", "Empty": "00"}
     assert all(SECRET.encode() not in blob for blob in all_output_bytes(out))
+
+
+def test_windows_path_pattern_masks_the_whole_path():
+    cfg = load_mask_config(DEFAULT_CONFIG / "mask_patterns.yaml")
+    assert mask_text("c:\\blueprism\\reports\\access reports\\", cfg) == ("[MASKED]", {"windows_path": 1})
+    assert mask_text('"D:\\Temp\\a.txt" & [Name]', cfg) == ('"[MASKED]" & [Name]', {"windows_path": 1})
+    assert mask_text("no path: here", cfg) == ("no path: here", {})

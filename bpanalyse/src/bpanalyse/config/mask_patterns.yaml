@@ -16,3 +16,6 @@ patterns:
   credential_keyword:
     regex: '(?i)\b(?:password|passwd|pwd|secret|token|apikey|api[_-]?key)\b\s{0,16}[:=]\s{0,16}[^\s;&"'']{1,1024}'
     requires: ["password", "passwd", "pwd", "secret", "token", "apikey", "api_key", "api-key"]
+  windows_path:
+    regex: '\b[A-Za-z]:\\[^"''<>|*?\r\n]{0,1024}'
+    requires: [':\']

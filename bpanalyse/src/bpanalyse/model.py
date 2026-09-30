@@ -23,6 +23,7 @@ class Release:
     created: str
     exported_by: str
     source_file: str
+    package_id: str  # the header's small integer; NOT unique across files, so never an identity
 
 
 @dataclass(frozen=True)
@@ -34,6 +35,9 @@ class Process:
     page_count: int
     stage_count: int
     version: str
+    language: str = ""  # ProcessInfo language (objects)
+    global_code_hash: str = ""
+    global_code_line_count: int = 0
 
 
 @dataclass(frozen=True)
@@ -77,6 +81,7 @@ class DataItem:
     exposure: str
     has_initial_value: int
     is_masked: int
+    is_encrypted: int = 0
 
 
 @dataclass(frozen=True)
@@ -108,6 +113,7 @@ class WorkQueue:
 class CredentialRef:
     name: str
     from_release: str
+    member_count: int = 0
 
 
 @dataclass(frozen=True)
@@ -115,6 +121,29 @@ class EnvVar:
     name: str
     datatype: str
     from_release: str
+
+
+@dataclass(frozen=True)
+class Group:
+    id: str
+    name: str
+    kind: str  # process | object
+    is_default: int
+    member_count: int
+
+
+@dataclass(frozen=True)
+class GroupMember:
+    group_id: str
+    member_id: str
+
+
+@dataclass(frozen=True)
+class WebApiService:
+    id: str
+    name: str
+    enabled: int
+    action_count: int
 
 
 @dataclass(frozen=True)
@@ -172,6 +201,11 @@ class ParsedFile:
     credentials: list[CredentialRef] = field(default_factory=list)
     env_vars: list[EnvVar] = field(default_factory=list)
     env_masks: dict[str, tuple[str, int]] = field(default_factory=dict)
+    groups: list[Group] = field(default_factory=list)
+    group_members: list[GroupMember] = field(default_factory=list)
+    web_api_services: list[WebApiService] = field(default_factory=list)
+    kind_counts: dict[str, int] = field(default_factory=dict)  # contents items by element name, for the run log
+    notes: list[str] = field(default_factory=list)
 
 
 @dataclass(frozen=True)
@@ -192,6 +226,9 @@ class Estate:
     credentials: list[CredentialRef] = field(default_factory=list)
     env_vars: list[EnvVar] = field(default_factory=list)
     env_masks: dict[str, tuple[str, int]] = field(default_factory=dict)
+    groups: list[Group] = field(default_factory=list)
+    group_members: list[GroupMember] = field(default_factory=list)
+    web_api_services: list[WebApiService] = field(default_factory=list)
     notes: list[str] = field(default_factory=list)
 
 
@@ -208,6 +245,7 @@ class Edge:
     unresolved: int
     release_id: str
     detail: str = ""
+    is_internal: int = 0  # calls_object to a Blue Prism built-in (config/internal_objects.yaml)
 
 
 @dataclass(frozen=True)

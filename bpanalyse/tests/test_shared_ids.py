@@ -2,21 +2,21 @@
 
 import sqlite3
 
-from conftest import MAIN, process_xml, release_xml, run_files, sheet_cells, stage_xml, wrapper_xml
+from conftest import process_xml, release_xml, run_files, sheet_cells, stage_xml, wrapper_xml
 
 from bpanalyse.query import named_edges
 
 
 def _obj(pid: str, tag: str) -> str:
-    pages = MAIN + (("pg-shared", f"Do {tag}", "Normal", "True"),)
-    appdef = f'<appdef><element id="el-shared" name="Button {tag}"><type>Button</type></element></appdef>'
+    pages = (("pg-shared", f"Do {tag}", "Normal", "True"),)
+    appdef = f'<appdef><element name="Button {tag}"><id>el-shared</id><type>Button</type></element></appdef>'
     stages = [
         stage_xml("st-act", f"Action {tag}", "Action", "pg-shared", '<resource object="Ext Mailer" action="Send"/><inputs/>'),
         stage_xml("st-code", f"Code {tag}", "Code", "pg-shared", f"<code language=\"csharp\">return {len(tag) + 1};</code>"),
         stage_xml("st-nav", f"Nav {tag}", "Navigate", "pg-shared", '<step><element id="el-shared"/></step>'),
         stage_xml("st-data", f"Data {tag}", "Data", "pg-shared", "<datatype>text</datatype><exposure>None</exposure>"),
     ]
-    return wrapper_xml(pid, f"Obj {tag}", process_xml(pid, f"Obj {tag}", stages, pages=pages, obj=True, appdef=appdef), obj=True)
+    return wrapper_xml(pid, f"Obj {tag}", process_xml(f"Obj {tag}", stages, pages=pages, obj=True, appdef=appdef), obj=True)
 
 
 def test_shared_guids_attributed_per_process(tmp_path):
@@ -43,7 +43,7 @@ def test_shared_guids_attributed_per_process(tmp_path):
 def test_empty_code_body_is_not_a_duplicate(tmp_path):
     def obj(pid, body):
         stage = stage_xml("st", "Code", "Code", inner=f'<code language="csharp">{body}</code>')
-        return wrapper_xml(pid, f"O{pid}", process_xml(pid, f"O{pid}", [stage], obj=True), obj=True)
+        return wrapper_xml(pid, f"O{pid}", process_xml(f"O{pid}", [stage], obj=True), obj=True)
 
     rc, out = run_files(tmp_path, {"a.bprelease": release_xml(obj("1", ""), obj("2", "  \n "), obj("3", "x = 1"), obj("4", "x=1"))})
     assert rc == 0

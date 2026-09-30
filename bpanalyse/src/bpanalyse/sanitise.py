@@ -15,11 +15,13 @@ Marks = dict[int, tuple[str, int]]  # id(element) -> ("pattern+pattern", masked 
 
 # Identifier names left unmasked inside a stage (element name -> attributes). "*" means every attribute.
 _KEEP_ATTRS = {
-    "stage": {"stageid", "name", "type"}, "element": {"id"}, "target": {"subsheetid", "processid", "processname"},
+    "stage": {"stageid", "name", "type"}, "element": {"id"},
     "resource": {"object", "action"}, "input": {"name", "type"}, "output": {"name", "type", "stage"}, "display": {"*"},
     "code": {"language"}, "field": {"name", "type"}, "choice": {"name", "ontrue"},
 }
-_KEEP_TEXT = frozenset({"subsheetid", "onsuccess", "ontrue", "onfalse", "datatype", "exposure"})
+_KEEP_TEXT = frozenset({"subsheetid", "processid", "onsuccess", "ontrue", "onfalse", "datatype", "exposure", "language",
+                        "groupid", "looptype", "loopdata", "comparetype", "name", "id"})
+_ENCRYPTED = "initialvalueenc"  # an encrypted value: never read, so it is replaced whole and reported as its own pattern
 
 
 class ConfigError(Exception):
@@ -83,7 +85,12 @@ def _mask_stage(stage: ET.Element, cfg: MaskConfig) -> tuple[str, int]:
         for key in list(el.attrib):
             if whole or not (key in keep or "*" in keep):
                 el.set(key, _hit(el.get(key, ""), cfg, total))
-        if el.text and (whole or name not in _KEEP_TEXT):
+        if name == _ENCRYPTED:
+            el.attrib.clear()
+            if el.text:
+                el.text = MASK
+                total["encrypted"] = total.get("encrypted", 0) + 1
+        elif el.text and (whole or name not in _KEEP_TEXT):
             el.text = _hit(el.text, cfg, total)
         if el.tail and el is not stage:
             el.tail = _hit(el.tail, cfg, total)

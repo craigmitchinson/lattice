@@ -74,7 +74,7 @@ def dead_page_ids(estate: Estate, edges: list[Edge]) -> set[str]:
 
 
 def compute_metrics(estate: Estate, edges: list[Edge]) -> list[MetricRow]:
-    calls = [e for e in edges if e.edge_type in ("calls_object", "calls_process") and e.to_id]
+    calls = [e for e in edges if e.edge_type in ("calls_object", "calls_process") and e.to_id and not e.is_internal]
     adj: dict[str, set[str]] = {}
     for e in calls:
         adj.setdefault(e.from_id, set()).add(_node(e))

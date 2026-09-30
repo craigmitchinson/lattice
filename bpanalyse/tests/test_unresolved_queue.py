@@ -9,5 +9,5 @@ def test_audit_queue_unresolved(db):
 
 def test_literal_queue_resolves(db):
     row = db.execute("SELECT unresolved, to_id FROM edge e JOIN stage s ON s.id = e.evidence_stage_id "
-                     "WHERE s.name = 'Get Next Claim'").fetchone()
+                     "WHERE s.name = 'Get Next Claim' AND e.edge_type = 'uses_queue'").fetchone()
     assert row == (0, "Claims Queue")

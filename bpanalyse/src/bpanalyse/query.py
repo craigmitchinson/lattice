@@ -47,6 +47,7 @@ def name_exists(conn: sqlite3.Connection, kind: str, name: str) -> bool:
 def _ids_named(conn: sqlite3.Connection, name: str) -> set[str]:
     ids = {i for (i,) in conn.execute("SELECT id FROM process WHERE name = ?", (name,))}
     ids |= {n for (n,) in conn.execute("SELECT name FROM external_object WHERE name = ?", (name,))}
+    ids |= {n for (n,) in conn.execute("SELECT DISTINCT to_id FROM edge WHERE to_type = 'internal_object' AND to_id = ?", (name,))}
     return ids
 
 

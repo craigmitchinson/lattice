@@ -23,16 +23,19 @@ from bpanalyse.query import DEP_COLUMNS, named_edges
 
 FIXED = datetime(2000, 1, 1)
 INVENTORY = {
-    "release": ("id, name, created, exported_by, source_file", "name, id"),
-    "process": ("id, name, type, release_id, page_count, stage_count, version", "name, id"),
+    "release": ("id, name, created, exported_by, source_file, package_id", "name, id"),
+    "process": ("id, name, type, release_id, page_count, stage_count, version, language, global_code_hash, global_code_line_count", "name, id"),
     "page": ("id, process_id, name, type, is_main, is_published, stage_count", "name, process_id, id"),
     "stage": ("id, process_id, page_id, name, type, x, y", "name, process_id, id"),
     "code_stage": ("c.stage_id, c.process_id, c.language, c.line_count, c.input_count, c.output_count, c.code_hash", None),
-    "data_item": ("c.stage_id, c.process_id, c.datatype, c.exposure, c.has_initial_value, c.is_masked", None),
+    "data_item": ("c.stage_id, c.process_id, c.datatype, c.exposure, c.has_initial_value, c.is_masked, c.is_encrypted", None),
     "calc_stage": ("c.stage_id, c.process_id, c.expression_length, c.literal_count", None),
     "app_element": ("id, object_id, name, element_type, parent_id, attribute_count", "name, id"),
     "work_queue": ("name, key_field, from_release", "name"),
-    "credential_ref": ("name, from_release", "name"),
+    "credential_ref": ("name, from_release, member_count", "name"),
+    "group": ("id, name, kind, is_default, member_count", "name, id"),
+    "group_member": ("group_id, member_id", "group_id, member_id"),
+    "web_api_service": ("id, name, enabled, action_count", "name, id"),
     "environment_variable": ("name, datatype, from_release", "name"),
     "external_object": ("name", "name"),
 }
@@ -88,9 +91,9 @@ def inventory_sheets(conn: sqlite3.Connection) -> list[tuple[str, tuple[str, ...
     sheets = []
     for table, (cols, order) in INVENTORY.items():
         if order is None:
-            sql = f"SELECT {cols} FROM {table} c JOIN stage s ON s.id = c.stage_id AND s.process_id = c.process_id ORDER BY s.name, c.process_id, c.stage_id"
+            sql = f"SELECT {cols} FROM \"{table}\" c JOIN stage s ON s.id = c.stage_id AND s.process_id = c.process_id ORDER BY s.name, c.process_id, c.stage_id"
         else:
-            sql = f"SELECT {cols} FROM {table} ORDER BY {order}"
+            sql = f'SELECT {cols} FROM "{table}" ORDER BY {order}'
         names = tuple(c.strip().split(".")[-1] for c in cols.split(","))
         sheets.append((table, names, _select(conn, sql)))
     return sheets
@@ -111,9 +114,11 @@ def graph_data(conn: sqlite3.Connection) -> dict:
     metrics = {i: dict(zip(METRIC_NAMES, [int(v) if float(v).is_integer() else v for v in r]))
                for i, *r in conn.execute(f"SELECT id, {', '.join(METRIC_NAMES)} FROM metrics")}
     nodes: dict[tuple[str, str], dict] = {}
-    for r in conn.execute("SELECT id, name, type, release_id, page_count, stage_count, version FROM process"):
+    for r in conn.execute("SELECT id, name, type, release_id, page_count, stage_count, version, language, global_code_hash, "
+                          "global_code_line_count FROM process"):
         nodes[(r[2], r[0])] = {"id": r[0], "type": r[2], "name": r[1], "release_id": r[3], "page_count": r[4],
-                               "stage_count": r[5], "version": r[6], "metrics": metrics.get(r[0], {}), "in_estate": True}
+                               "stage_count": r[5], "version": r[6], "language": r[7], "global_code_hash": r[8],
+                               "global_code_line_count": r[9], "metrics": metrics.get(r[0], {}), "in_estate": True}
     for r in conn.execute("SELECT id, process_id, name, type, is_main, is_published, stage_count FROM page"):
         nodes[("page", key(r[1], r[0]))] = {"id": key(r[1], r[0]), "type": "page", "name": r[2], "process_id": r[1], "page_type": r[3],
                                  "is_main": r[4], "is_published": r[5], "stage_count": r[6], "in_estate": True}
@@ -125,7 +130,7 @@ def graph_data(conn: sqlite3.Connection) -> dict:
         for r in conn.execute(f"SELECT name, {extra} FROM {table}"):
             nodes[(kind, r[0])] = {"id": r[0], "type": kind, "name": r[0], extra: r[1], "in_estate": kind != "external_object"}
     cols = ("from_id", "from_process_id", "from_type", "to_id", "to_type", "edge_type", "evidence_stage_id", "evidence_process_id",
-            "unresolved", "release_id", "detail")
+            "unresolved", "release_id", "detail", "is_internal")
     edges = [dict(zip(cols, r)) for r in conn.execute(
         f"SELECT {', '.join(cols)} FROM edge ORDER BY edge_type, from_id, to_id, evidence_process_id, evidence_stage_id")]
     for e in edges:
