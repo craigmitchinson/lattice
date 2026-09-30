@@ -36,13 +36,13 @@ The runtime dependencies are openpyxl and pyyaml. `[test]` adds pytest.
 
     python -m bpanalyse run ~/bp-releases ~/bp-output
 
-This reads every `*.bprelease` file in the first directory and writes `estate.sqlite`, `inventory.xlsx`, `dependencies.xlsx`, `release_map.xlsx`, `metrics.xlsx`, `findings.xlsx`, `graph.json`, `graph.graphml` and `run.log` to `./output`. The exit code is 0 on success, 2 if any input file failed to parse (the other files are still processed and `run.log` names the failing file and line), and 1 on a usage error.
+This reads every `*.bprelease` file in the first directory and writes `estate.sqlite`, `inventory.xlsx`, `dependencies.xlsx`, `release_map.xlsx`, `metrics.xlsx`, `findings.xlsx`, `graph.json`, `graph.graphml` and `run.log` to the second. The exit code is 0 on success, 2 if any input file failed to parse (the other files are still processed and `run.log` names the failing file and line), and 1 on a usage error.
 
 Sensitive literals are masked in memory before parsing, using the patterns in `src/bpanalyse/config/mask_patterns.yaml`. The internal Work Queues and Credentials object names, and the input names used to find the queue or credential, are in `src/bpanalyse/config/internal_objects.yaml`. Use `--config-dir` to point at a different config directory.
 
 ## Query
 
-    python -m bpanalyse query impact "Policy Lookup" --db output/estate.sqlite
+    python -m bpanalyse query impact "Policy Lookup" --db ~/bp-output/estate.sqlite
 
 The subcommands are `impact` (everything upstream), `depends` (everything downstream), `queue` and `credential`. Results are printed as tab-separated text using the columns of `dependencies.xlsx`. Add `--out result.xlsx` to write the table to a workbook as well.
 
